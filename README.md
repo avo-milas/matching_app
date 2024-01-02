@@ -39,36 +39,8 @@ Web-приложение симулирует работу [алгоритма �
 ## Getting Started
 
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 <!-- USAGE EXAMPLES -->
 ## Использование
-
-In each model block, a graphical interface is implemented. The parameter values can be changed using sliders as shown in the image below:
-
-<img src="https://github.com/avo-milas/utility_maximization/blob/main/parameters.png" alt="parameters" width="500" />
-
-For each selected consumption set, there are three possible states:
-
--Belongs to the budget constraint
-
-<img src="https://github.com/avo-milas/utility_maximization/blob/main/st1.png" alt="state1" width="600" />
-
--Lies on the budget constraint
-
-<img src="https://github.com/avo-milas/utility_maximization/blob/main/st2.png" alt="state2" width="600" />
-
--Goes beyond the budget constraint
-
-<img src="https://github.com/avo-milas/utility_maximization/blob/main/st3.png" alt="state3" width="600" />
-
-Additionally, by selecting the appropriate utility type, budget constraint shape, and setting the parameters, an optimal set of goods can be obtained:
-
-<img src="https://github.com/avo-milas/utility_maximization/blob/main/consumer%20problem.png" alt="consumer_problem" width="600" />
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 <!-- CONTACT -->
 ## Контакты
