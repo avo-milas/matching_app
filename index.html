@@ -9,31 +9,18 @@
 <body>
 
 <div id="preferencesInput">
-    
-    <label for="man1">Man 1:</label>
-    <input type="text" id="man1" placeholder="1 2 3">
 
-    <label for="man2">Man 2:</label>
-    <input type="text" id="man2" placeholder="2 3 1">
+    <label for="pairsCount">Число пар:</label>
+    <input type="number" id="pairsCount" placeholder="3">
 
-    <label for="man3">Man 3:</label>
-    <input type="text" id="man3" placeholder="3 1 2">
+    <div id="menPreferences"></div>
+    <div id="womenPreferences"></div>
 
     <br>
 
-    <label for="woman1">Woman 1:</label>
-    <input type="text" id="woman1" placeholder="2 1 3">
-
-    <label for="woman2">Woman 2:</label>
-    <input type="text" id="woman2" placeholder="3 2 1">
-
-    <label for="woman3">Woman 3:</label>
-    <input type="text" id="woman3" placeholder="1 3 2">
-
-    <br>
-
-    <button onclick="runAlgorithm()">Run algorithm</button>
-    <button onclick="nextAlgorithmStep()">Next Step</button>
+    <button id="newDataButton">Задать новые предпочтения</button>
+    <button id="resultButton">Показать результат</button>
+    <button id="runWithStepsButton">Запустить по шагам</button>
 
 <div id="results">
 </div>
