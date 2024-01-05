@@ -1,16 +1,81 @@
-//////////////////////////////
-// Вспомогательные функции и глобальные переменные
 let cachedResults = null;
+let cachedPreferences = null;
 let pairsCnt = 3;
+
+// Операции с предпочтениями/////
+function parsePreferences(input) {
+    return input.split(' ').map(item => item.trim());
+}
+
+function getPreferences(prefix, count) {
+    const preferences = {};
+    for (let i = 1; i <= count; i++) {
+        const id = `${prefix}${i}`;
+        preferences[i] = parsePreferences(document.getElementById(id).value);
+    }
+    return preferences;
+}
+
+function checkPreferences(menPrefs, womenPrefs) {
+    if (menPrefs == {} || womenPrefs == {}) {
+        alert('Предпочтения не должны быть пустыми!');
+        return false;
+    } else {
+        for (let i = 1; i <= pairsCnt; ++i) {
+            if (new Set(menPrefs[i]).size !== pairsCnt || new Set(womenPrefs[i]).size !== pairsCnt) {
+                alert('Все предпочтения должны быть указаны правильно!');
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+function isEqual(obj1, obj2) {
+    return JSON.stringify(obj1) === JSON.stringify(obj2);
+}
+
+function checkPreferencesChanged() {
+    const menPreferences = getPreferences('man', pairsCnt);
+    const womenPreferences = getPreferences('woman', pairsCnt);
+
+    if (!cachedPreferences || !isEqual(cachedPreferences.men, menPreferences) || !isEqual(cachedPreferences.women, womenPreferences)) {
+        cachedPreferences = { men: menPreferences, women: womenPreferences };
+        cachedResults = null;
+        return true;
+    }
+
+    return false;
+}
+/////////////////////////////////
 
 function isEngaged(woman, stablePairs) {
     return Object.values(stablePairs).includes(woman);
 }
 
-function parsePreferences(input) {
-    return input.split(' ').map(item => parseInt(item.trim()));
+function displayPairs(pairs) {
+    const resultsContainer = document.getElementById('results');
+    const menCnt = Object.keys(pairs).length;
+    if (menCnt === 0) {
+        resultsContainer.innerHTML = '<p>No stable pairs found.</p>';
+    } else {
+        resultsContainer.innerHTML = '<h2>Stable pairs:</h2>';
+        for (let i = 1; i <= menCnt; i++) {
+            const man = Object.keys(pairs)[i - 1];
+            console.log(i);
+            const woman = pairs[man];
+            const resultElement = document.createElement('p');
+            resultElement.innerHTML = `<strong>Pair ${i}:</strong> ${man} - ${woman}`;
+            resultsContainer.appendChild(resultElement);
+        }
+    }
 }
-//////////////////////////////
+
+function clearResults() {
+    const resultsContainer = document.getElementById('results');
+    resultsContainer.innerHTML = '';
+}
+
 
 function galeShapleyWithSteps(menPrefs, womenPrefs) {
 
@@ -77,67 +142,35 @@ function galeShapleyWithSteps(menPrefs, womenPrefs) {
     return { pairs: stablePairs, steps: algorithmSteps };
 }
 
-
-function displayPairs(pairs) {
-    const resultsContainer = document.getElementById('results');
-    const menCnt = Object.keys(pairs).length;
-    if (menCnt === 0) {
-        resultsContainer.innerHTML = '<p>No stable pairs found.</p>';
-    } else {
-        resultsContainer.innerHTML = '<h2>Stable pairs:</h2>';
-        for (let i = 1; i <= menCnt; i++) {
-            const man = Object.keys(pairs)[i - 1];
-            console.log(menCnt);
-            const woman = man;
-            const resultElement = document.createElement('p');
-            resultElement.innerHTML = `<strong>Pair ${i}:</strong> ${man} - ${woman}`;
-            resultsContainer.appendChild(resultElement);
-        }
-    }
-}
-
-function clearResults() {
-    const resultsContainer = document.getElementById('results');
-    resultsContainer.innerHTML = '';
-}
-
-
-function generatePreferences(prefix, count) {
-    const preferences = {};
-    for (let i = 1; i <= count; i++) {
-        const id = `${prefix}${i}`;
-        preferences[i] = parsePreferences(document.getElementById(id).value);
-    }
-    return preferences;
-}
-
-
 function runAlgorithm() {
     clearResults();
 
-    if (!cachedResults) {
-        const menPreferences = generatePreferences('man', pairsCnt);
-        const womenPreferences = generatePreferences('woman', pairsCnt);
-        cachedResults = galeShapleyWithSteps(menPreferences, womenPreferences);
+    if (checkPreferencesChanged() || !cachedResults) {
+
+        if (checkPreferences(cachedPreferences.men, cachedPreferences.women)) {
+            cachedResults = galeShapleyWithSteps(cachedPreferences.men, cachedPreferences.women);
+        } else {
+            return;
+        }
     }
 
     const { pairs, steps } = cachedResults;
-    console.log(pairs);
     displayPairs(pairs);
 }
-
 
 function runAlgorithmWithSteps() {
     clearResults();
 
-    if (!cachedResults) {
-        const menPreferences = generatePreferences('man', pairsCnt);
-        const womenPreferences = generatePreferences('woman', pairsCnt);
-        cachedResults = galeShapleyWithSteps(menPreferences, womenPreferences);
+    if (checkPreferencesChanged() || !cachedResults) {
+
+        if (checkPreferences(cachedPreferences.men, cachedPreferences.women)) {
+            cachedResults = galeShapleyWithSteps(cachedPreferences.men, cachedPreferences.women);
+        } else {
+            return;
+        }
     }
 
     const { pairs, steps } = cachedResults;
-
 
     let currentStepIndex = 0;
 
@@ -145,7 +178,7 @@ function runAlgorithmWithSteps() {
         if (currentStepIndex < steps.length - 1) {
             const step = steps[currentStepIndex];
             const resultElement = document.createElement('p');
-            resultElement.innerHTML = `<strong>Шаг ${currentStepIndex + 1}:</strong> ${step.join(', ')}`;
+            resultElement.innerHTML = `<strong>Шаг ${currentStepIndex + 1}:</strong> ${step.join('; ')}`;
             document.getElementById('results').appendChild(resultElement);
             currentStepIndex++;
         } else {
@@ -158,7 +191,6 @@ function runAlgorithmWithSteps() {
     nextStepButton.onclick = displayNextStep;
     document.getElementById('results').appendChild(nextStepButton);
 }
-
 
 function resetAlgorithm() {
     clearResults();
@@ -175,7 +207,7 @@ function resetAlgorithm() {
     for (let i = 1; i <= pairsCnt; i++) {
         const labelMan = document.createElement('label');
         labelMan.htmlFor = `man${i}`;
-        labelMan.textContent = `M ${i}:`;
+        labelMan.textContent = `M${i}:`;
         const inputMan = document.createElement('input');
         inputMan.type = 'text';
         inputMan.id = `man${i}`;
@@ -183,7 +215,7 @@ function resetAlgorithm() {
 
         const labelWoman = document.createElement('label');
         labelWoman.htmlFor = `woman${i}`;
-        labelWoman.textContent = `W ${i}:`;
+        labelWoman.textContent = `W${i}:`;
         const inputWoman = document.createElement('input');
         inputWoman.type = 'text';
         inputWoman.id = `woman${i}`;
@@ -194,15 +226,8 @@ function resetAlgorithm() {
         womenPreferencesContainer.appendChild(labelWoman);
         womenPreferencesContainer.appendChild(inputWoman);
     }
-
-    // Показать кнопки "Show Results" и "Run with Steps"
-    // document.getElementById('resultButton').style.display = 'inline-block';
-    // document.getElementById('runWithStepsButton').style.display = 'inline-block';
 }
-
 
 document.getElementById('newDataButton').addEventListener('click', resetAlgorithm);
 document.getElementById('resultButton').addEventListener('click', runAlgorithm);
 document.getElementById('runWithStepsButton').addEventListener('click', runAlgorithmWithSteps);
-
-resetAlgorithm();
