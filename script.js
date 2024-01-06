@@ -1,17 +1,49 @@
 let cachedResults = null;
 let cachedPreferences = null;
 let pairsCnt = 3;
+let menIndToName = {};
+let menNameToInd = {};
+let womenIndToName = {};
+let womenNameToInd = {};
 
-// Операции с предпочтениями/////
-function parsePreferences(input) {
-    return input.split(' ').map(item => item.trim());
+// Операции с предпочтениями и именами /////
+
+function mapNames() {
+    for (let i = 1; i <= pairsCnt; i++) {
+        menIndToName[i] = document.getElementById(`manName${i}`).value;
+        menNameToInd[document.getElementById(`manName${i}`).value] = i;
+
+        womenIndToName[i] = document.getElementById(`womanName${i}`).value;
+        womenNameToInd[document.getElementById(`womanName${i}`).value] = i;
+        
+    }
+
+    console.log(menIndToName);
+    console.log(menNameToInd);
+
+    console.log(womenIndToName);
+    console.log(womenNameToInd);
 }
 
-function getPreferences(prefix, count) {
+function menParsePreferences(input) {
+    let a = input.split(' ').map(item => womenNameToInd[item.trim()]);
+    return a;
+}
+
+function womenParsePreferences(input) {
+    let a = input.split(' ').map(item => menNameToInd[item.trim()]);
+    return a;
+}
+
+function getPreferences(prefix) {
     const preferences = {};
-    for (let i = 1; i <= count; i++) {
+    for (let i = 1; i <= pairsCnt; i++) {
         const id = `${prefix}${i}`;
-        preferences[i] = parsePreferences(document.getElementById(id).value);
+        if (prefix === 'man') {
+            preferences[i] = menParsePreferences(document.getElementById(id).value);
+        } else {
+            preferences[i] = womenParsePreferences(document.getElementById(id).value);
+        }
     }
     return preferences;
 }
@@ -53,6 +85,7 @@ function isEngaged(woman, stablePairs) {
     return Object.values(stablePairs).includes(woman);
 }
 
+// отображение результатов ///////
 function displayPairs(pairs) {
     const resultsContainer = document.getElementById('results');
     const menCnt = Object.keys(pairs).length;
@@ -61,11 +94,10 @@ function displayPairs(pairs) {
     } else {
         resultsContainer.innerHTML = '<h2>Stable pairs:</h2>';
         for (let i = 1; i <= menCnt; i++) {
-            const man = Object.keys(pairs)[i - 1];
-            console.log(i);
-            const woman = pairs[man];
+            // const man = Object.keys(pairs)[i - 1];
+            const woman = pairs[i];
             const resultElement = document.createElement('p');
-            resultElement.innerHTML = `<strong>Pair ${i}:</strong> ${man} - ${woman}`;
+            resultElement.innerHTML = `<strong>Pair ${i}:</strong> ${menIndToName[i]} - ${womenIndToName[woman]}`;
             resultsContainer.appendChild(resultElement);
         }
     }
@@ -75,7 +107,7 @@ function clearResults() {
     const resultsContainer = document.getElementById('results');
     resultsContainer.innerHTML = '';
 }
-
+/////////////////////////////////
 
 function galeShapleyWithSteps(menPrefs, womenPrefs) {
 
@@ -93,12 +125,13 @@ function galeShapleyWithSteps(menPrefs, womenPrefs) {
         if (currentSimulationStep === 1) {
 
             // Мужчины делают предложения
-            for (const man in menPrefs) {
-
+            for (let man_str of Object.keys(menPrefs)) {
+                const man = parseInt(man_str, 10); 
+                
                 if (!engagedMen.has(man)) {
 
                     const woman = menPrefs[man].shift();
-                    const actionDescription = `${man} proposes to ${woman}`;
+                    const actionDescription = `${menIndToName[man]} proposes to ${womenIndToName[woman]}`;
                     console.log(actionDescription)
                     cur_actions.push(actionDescription);
 
@@ -113,7 +146,8 @@ function galeShapleyWithSteps(menPrefs, womenPrefs) {
         } else if (currentSimulationStep === 2) {
 
             // Женщины выбирают лучшие предложения
-            for (const woman in womenPrefs) {
+            for (let woman_str of Object.keys(womenPrefs)) {
+                const woman = parseInt(woman_str, 10); 
 
                 if (proposals[woman] && proposals[woman].length > 0) {
                     proposals[woman].sort((a, b) => womenPrefs[woman].indexOf(a) - womenPrefs[woman].indexOf(b));
@@ -122,7 +156,7 @@ function galeShapleyWithSteps(menPrefs, womenPrefs) {
                     engagedMen.add(man);
 
                     for (let rejectedMan of proposals[woman].slice(1)) {
-                        const actionDescription = `${rejectedMan} is rejected by ${woman}`;
+                        const actionDescription = `${menIndToName[rejectedMan]} is rejected by ${womenIndToName[woman]}`;
                         console.log(actionDescription);
                         cur_actions.push(actionDescription);
                         stablePairs[rejectedMan] = null;
@@ -144,10 +178,16 @@ function galeShapleyWithSteps(menPrefs, womenPrefs) {
 
 function runAlgorithm() {
     clearResults();
+    mapNames();
 
     if (checkPreferencesChanged() || !cachedResults) {
 
         if (checkPreferences(cachedPreferences.men, cachedPreferences.women)) {
+            console.log("GS algo---");
+            console.log(`men:`);
+            console.log(cachedPreferences.men);
+            console.log(`women:`);
+            console.log(cachedPreferences.women);
             cachedResults = galeShapleyWithSteps(cachedPreferences.men, cachedPreferences.women);
         } else {
             return;
@@ -160,6 +200,7 @@ function runAlgorithm() {
 
 function runAlgorithmWithSteps() {
     clearResults();
+    mapNames();
 
     if (checkPreferencesChanged() || !cachedResults) {
 
@@ -205,26 +246,43 @@ function resetAlgorithm() {
     womenPreferencesContainer.innerHTML = '';
 
     for (let i = 1; i <= pairsCnt; i++) {
+
         const labelMan = document.createElement('label');
         labelMan.htmlFor = `man${i}`;
         labelMan.textContent = `M${i}:`;
-        const inputMan = document.createElement('input');
-        inputMan.type = 'text';
-        inputMan.id = `man${i}`;
-        inputMan.placeholder = `1 2 3`;
+
+        const inputManName = document.createElement('input');
+        inputManName.type = 'text';
+        inputManName.id = `manName${i}`;
+        inputManName.placeholder = `name`;
+
+        const inputManPreferences = document.createElement('input');
+        inputManPreferences.type = 'text';
+        inputManPreferences.id = `man${i}`;
+        inputManPreferences.placeholder = `preferences`;
+
 
         const labelWoman = document.createElement('label');
         labelWoman.htmlFor = `woman${i}`;
         labelWoman.textContent = `W${i}:`;
-        const inputWoman = document.createElement('input');
-        inputWoman.type = 'text';
-        inputWoman.id = `woman${i}`;
-        inputWoman.placeholder = `2 3 1`;
+
+        const inputWomanName = document.createElement('input');
+        inputWomanName.type = 'text';
+        inputWomanName.id = `womanName${i}`;
+        inputWomanName.placeholder = `name`;
+
+        const inputWomanPreferences = document.createElement('input');
+        inputWomanPreferences.type = 'text';
+        inputWomanPreferences.id = `woman${i}`;
+        inputWomanPreferences.placeholder = `preferences`;
+
 
         menPreferencesContainer.appendChild(labelMan);
-        menPreferencesContainer.appendChild(inputMan);
+        menPreferencesContainer.appendChild(inputManName);
+        menPreferencesContainer.appendChild(inputManPreferences);
         womenPreferencesContainer.appendChild(labelWoman);
-        womenPreferencesContainer.appendChild(inputWoman);
+        womenPreferencesContainer.appendChild(inputWomanName);
+        womenPreferencesContainer.appendChild(inputWomanPreferences);
     }
 }
 
