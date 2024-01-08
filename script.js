@@ -1,6 +1,8 @@
 let cachedResults = null;
 let cachedPreferences = null;
 let pairsCnt = 3;
+let menNames = new Set();
+let womenNames = new Set();
 let menIndToName = {};
 let menNameToInd = {};
 let womenIndToName = {};
@@ -8,14 +10,44 @@ let womenNameToInd = {};
 
 // Операции с предпочтениями и именами /////
 
-function mapNames() {
-    for (let i = 1; i <= pairsCnt; i++) {
-        menIndToName[i] = document.getElementById(`manName${i}`).value;
-        menNameToInd[document.getElementById(`manName${i}`).value] = i;
+function areSetsEqual(set1, set2) {
+    if (set1.size !== set2.size) {
+        return false;
+    }
 
-        womenIndToName[i] = document.getElementById(`womanName${i}`).value;
-        womenNameToInd[document.getElementById(`womanName${i}`).value] = i;
-        
+    for (const item of set1) {
+        if (!set2.has(item)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function mapNames() {
+    menNames.clear();
+    womenNames.clear();
+
+    for (let i = 1; i <= pairsCnt; i++) {
+        let manName = document.getElementById(`manName${i}`).value;
+        if (manName !== null) {
+            menIndToName[i] = manName;
+            menNameToInd[manName] = i;
+            menNames.add(manName);
+        } else {
+            alert('Имена должны быть указаны!');
+            return false;
+        }
+
+        let womanName = document.getElementById(`womanName${i}`).value;
+        if (manName !== null) {
+            womenIndToName[i] = womanName;
+            womenNameToInd[womanName] = i;
+            womenNames.add(womanName);
+        } else {
+            alert('Имена должны быть указаны!');
+            return false;
+        }
     }
 
     console.log(menIndToName);
@@ -23,16 +55,49 @@ function mapNames() {
 
     console.log(womenIndToName);
     console.log(womenNameToInd);
+
+    console.log(pairsCnt);
+    console.log(womenNames.size);
+    console.log(menNames.size);
+
+    console.log(womenNames);
+    console.log(menNames);
+
+    if (womenNames.size != pairsCnt || menNames.size != pairsCnt) {
+        alert('Имена должны быть уникальными!');
+        return false;
+    }
+
+    return true;
 }
 
 function menParsePreferences(input) {
-    let a = input.split(' ').map(item => womenNameToInd[item.trim()]);
-    return a;
+    let names_prefs = input.split(' ').map(item => item.trim());
+    let cur_prefs_names = new Set();
+    for (let name of names_prefs) {
+        cur_prefs_names.add(name);
+    }
+
+    if (!areSetsEqual(cur_prefs_names, womenNames)) {
+        alert('Предпочтения одной стороны должны быть согласованы с именами другой!');
+        return false;
+    }
+    let prefs = names_prefs.map(item => womenNameToInd[item]);
+    return prefs;
 }
 
 function womenParsePreferences(input) {
-    let a = input.split(' ').map(item => menNameToInd[item.trim()]);
-    return a;
+    let names_prefs = input.split(' ').map(item => item.trim());
+    let cur_prefs_names = new Set();
+    for (let name of names_prefs) {
+        cur_prefs_names.add(name);
+    }
+    if (!areSetsEqual(cur_prefs_names, menNames)) {
+        alert('Предпочтения одной стороны должны быть согласованы с именами другой!');
+        return false;
+    }
+    let prefs = names_prefs.map(item => menNameToInd[item]);
+    return prefs;
 }
 
 function getPreferences(prefix) {
@@ -40,9 +105,19 @@ function getPreferences(prefix) {
     for (let i = 1; i <= pairsCnt; i++) {
         const id = `${prefix}${i}`;
         if (prefix === 'man') {
-            preferences[i] = menParsePreferences(document.getElementById(id).value);
+            let fm = menParsePreferences(document.getElementById(id).value);
+            if (fm) {
+                preferences[i] = fm;
+            } else {
+                return false;
+            }
         } else {
-            preferences[i] = womenParsePreferences(document.getElementById(id).value);
+            let fw = womenParsePreferences(document.getElementById(id).value);
+            if (fw) {
+                preferences[i] = fw;
+            } else {
+                return false;
+            }
         }
     }
     return preferences;
@@ -53,12 +128,19 @@ function checkPreferences(menPrefs, womenPrefs) {
         alert('Предпочтения не должны быть пустыми!');
         return false;
     } else {
-        for (let i = 1; i <= pairsCnt; ++i) {
-            if (new Set(menPrefs[i]).size !== pairsCnt || new Set(womenPrefs[i]).size !== pairsCnt) {
-                alert('Все предпочтения должны быть указаны правильно!');
-                return false;
-            }
-        }
+        // console.log(menPrefs);
+        // for (let i = 1; i <= pairsCnt; ++i) {
+        //     let mp = menPrefs[i];
+        //     let wp = new Set(womenPrefs[i]);
+        //     console.log(womenNames);
+        //     console.log(menNames);
+        //     console.log(mp);
+        //     console.log(wp);
+        //     if (!areSetsEqual(mp, womenNames) || !areSetsEqual(wp, menNames)) {
+        //         alert('Все предпочтения должны быть указаны правильно!');
+        //         return false;
+        //     }
+        // }
         return true;
     }
 }
@@ -68,8 +150,12 @@ function isEqual(obj1, obj2) {
 }
 
 function checkPreferencesChanged() {
-    const menPreferences = getPreferences('man', pairsCnt);
-    const womenPreferences = getPreferences('woman', pairsCnt);
+    const menPreferences = getPreferences('man');
+    const womenPreferences = getPreferences('woman');
+
+    if (!(menPreferences && womenPreferences)) {
+        return "false preferences";
+    }
 
     if (!cachedPreferences || !isEqual(cachedPreferences.men, menPreferences) || !isEqual(cachedPreferences.women, womenPreferences)) {
         cachedPreferences = { men: menPreferences, women: womenPreferences };
@@ -178,9 +264,22 @@ function galeShapleyWithSteps(menPrefs, womenPrefs) {
 
 function runAlgorithm() {
     clearResults();
-    mapNames();
 
-    if (checkPreferencesChanged() || !cachedResults) {
+    if (!mapNames()) {
+        menNames.clear();
+        womenNames.clear();
+        return;
+    }
+
+    console.log("--------");
+    console.log(womenNames);
+    console.log(menNames);
+
+    let cpc = checkPreferencesChanged();
+    
+    if (cpc === "false preferences") {
+        return;
+    } else if (cpc || !cachedResults) {
 
         if (checkPreferences(cachedPreferences.men, cachedPreferences.women)) {
             console.log("GS algo---");
@@ -200,9 +299,16 @@ function runAlgorithm() {
 
 function runAlgorithmWithSteps() {
     clearResults();
-    mapNames();
+    if (!mapNames()) {
+        return;
+    }
 
-    if (checkPreferencesChanged() || !cachedResults) {
+    let cpc = checkPreferencesChanged();
+
+    if (cpc == "false preferences") {
+        return;
+
+    } else if (cpc || !cachedResults) {
 
         if (checkPreferences(cachedPreferences.men, cachedPreferences.women)) {
             cachedResults = galeShapleyWithSteps(cachedPreferences.men, cachedPreferences.women);
