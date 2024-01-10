@@ -47,6 +47,6 @@ Web-приложение симулирует работу [алгоритма �
 
 Alina Salimova - [@avo_milas](https://t.me/avo_milas) - avo_milas@mail.ru
 
-Project Link: [avo-milas.github.io/matching_app/](avo-milas.github.io/matching_app/)
+Project Link: [https://github.com/avo-milas/matching_app](https://github.com/avo-milas/matching_app)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
