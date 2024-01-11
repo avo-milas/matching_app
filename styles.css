@@ -1,17 +1,38 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-}
-
 #preferencesInput {
-    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
 }
 
-label {
-    margin-right: 10px;
+#menPreferences, #womenPreferences {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-button {
-    margin-top: 10px;
-    cursor: pointer;
+.circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin: 5px;
 }
+
+.men-circle {
+    background-color: rgb(78, 196, 246);
+}
+
+.women-circle {
+    background-color: pink;
+}
+
+#buttonsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px; /* добавьте отступ сверху по вашему усмотрению */
+}
+
+#resultButton, #runWithStepsButton {
+    margin-top: 5px; /* добавьте отступ сверху по вашему усмотрению */
+}
+

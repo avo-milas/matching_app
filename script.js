@@ -339,6 +339,66 @@ function runAlgorithmWithSteps() {
     document.getElementById('results').appendChild(nextStepButton);
 }
 
+// function resetAlgorithm() {
+//     clearResults();
+//     cachedResults = null;
+
+//     pairsCnt = parseInt(document.getElementById('pairsCount').value, 10);
+
+//     const menPreferencesContainer = document.getElementById('menPreferences');
+//     const womenPreferencesContainer = document.getElementById('womenPreferences');
+
+//     menPreferencesContainer.innerHTML = '';
+//     womenPreferencesContainer.innerHTML = '';
+
+//     for (let i = 1; i <= pairsCnt; i++) {
+
+//         const labelMan = document.createElement('label');
+//         labelMan.htmlFor = `man${i}`;
+//         labelMan.textContent = `M${i}:`;
+
+//         const inputManName = document.createElement('input');
+//         inputManName.type = 'text';
+//         inputManName.id = `manName${i}`;
+//         inputManName.placeholder = `name`;
+
+//         const inputManPreferences = document.createElement('input');
+//         inputManPreferences.type = 'text';
+//         inputManPreferences.id = `man${i}`;
+//         inputManPreferences.placeholder = `preferences`;
+
+
+//         const labelWoman = document.createElement('label');
+//         labelWoman.htmlFor = `woman${i}`;
+//         labelWoman.textContent = `W${i}:`;
+
+//         const inputWomanName = document.createElement('input');
+//         inputWomanName.type = 'text';
+//         inputWomanName.id = `womanName${i}`;
+//         inputWomanName.placeholder = `name`;
+
+//         const inputWomanPreferences = document.createElement('input');
+//         inputWomanPreferences.type = 'text';
+//         inputWomanPreferences.id = `woman${i}`;
+//         inputWomanPreferences.placeholder = `preferences`;
+
+
+//         menPreferencesContainer.appendChild(labelMan);
+//         menPreferencesContainer.appendChild(inputManName);
+//         menPreferencesContainer.appendChild(inputManPreferences);
+//         womenPreferencesContainer.appendChild(labelWoman);
+//         womenPreferencesContainer.appendChild(inputWomanName);
+//         womenPreferencesContainer.appendChild(inputWomanPreferences);
+//     }
+// }
+
+
+function createCircleElement(className) {
+    const circle = document.createElement('div');
+    circle.className = `circle ${className}`;
+    return circle;
+}
+
 function resetAlgorithm() {
     clearResults();
     cachedResults = null;
@@ -352,7 +412,6 @@ function resetAlgorithm() {
     womenPreferencesContainer.innerHTML = '';
 
     for (let i = 1; i <= pairsCnt; i++) {
-
         const labelMan = document.createElement('label');
         labelMan.htmlFor = `man${i}`;
         labelMan.textContent = `M${i}:`;
@@ -367,6 +426,12 @@ function resetAlgorithm() {
         inputManPreferences.id = `man${i}`;
         inputManPreferences.placeholder = `preferences`;
 
+        const menCircle = createCircleElement('men-circle');
+
+        menPreferencesContainer.appendChild(labelMan);
+        menPreferencesContainer.appendChild(inputManName);
+        menPreferencesContainer.appendChild(inputManPreferences);
+        menPreferencesContainer.appendChild(menCircle);
 
         const labelWoman = document.createElement('label');
         labelWoman.htmlFor = `woman${i}`;
@@ -382,13 +447,12 @@ function resetAlgorithm() {
         inputWomanPreferences.id = `woman${i}`;
         inputWomanPreferences.placeholder = `preferences`;
 
+        const womenCircle = createCircleElement('women-circle');
 
-        menPreferencesContainer.appendChild(labelMan);
-        menPreferencesContainer.appendChild(inputManName);
-        menPreferencesContainer.appendChild(inputManPreferences);
         womenPreferencesContainer.appendChild(labelWoman);
         womenPreferencesContainer.appendChild(inputWomanName);
         womenPreferencesContainer.appendChild(inputWomanPreferences);
+        womenPreferencesContainer.appendChild(womenCircle);
     }
 }
 
