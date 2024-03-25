@@ -339,65 +339,16 @@ function runAlgorithmWithSteps() {
     document.getElementById('results').appendChild(nextStepButton);
 }
 
-// function resetAlgorithm() {
-//     clearResults();
-//     cachedResults = null;
 
-//     pairsCnt = parseInt(document.getElementById('pairsCount').value, 10);
-
-//     const menPreferencesContainer = document.getElementById('menPreferences');
-//     const womenPreferencesContainer = document.getElementById('womenPreferences');
-
-//     menPreferencesContainer.innerHTML = '';
-//     womenPreferencesContainer.innerHTML = '';
-
-//     for (let i = 1; i <= pairsCnt; i++) {
-
-//         const labelMan = document.createElement('label');
-//         labelMan.htmlFor = `man${i}`;
-//         labelMan.textContent = `M${i}:`;
-
-//         const inputManName = document.createElement('input');
-//         inputManName.type = 'text';
-//         inputManName.id = `manName${i}`;
-//         inputManName.placeholder = `name`;
-
-//         const inputManPreferences = document.createElement('input');
-//         inputManPreferences.type = 'text';
-//         inputManPreferences.id = `man${i}`;
-//         inputManPreferences.placeholder = `preferences`;
-
-
-//         const labelWoman = document.createElement('label');
-//         labelWoman.htmlFor = `woman${i}`;
-//         labelWoman.textContent = `W${i}:`;
-
-//         const inputWomanName = document.createElement('input');
-//         inputWomanName.type = 'text';
-//         inputWomanName.id = `womanName${i}`;
-//         inputWomanName.placeholder = `name`;
-
-//         const inputWomanPreferences = document.createElement('input');
-//         inputWomanPreferences.type = 'text';
-//         inputWomanPreferences.id = `woman${i}`;
-//         inputWomanPreferences.placeholder = `preferences`;
-
-
-//         menPreferencesContainer.appendChild(labelMan);
-//         menPreferencesContainer.appendChild(inputManName);
-//         menPreferencesContainer.appendChild(inputManPreferences);
-//         womenPreferencesContainer.appendChild(labelWoman);
-//         womenPreferencesContainer.appendChild(inputWomanName);
-//         womenPreferencesContainer.appendChild(inputWomanPreferences);
-//     }
-// }
-
-
-function createCircleElement(className) {
-    const circle = document.createElement('div');
-    circle.className = `circle ${className}`;
-    return circle;
+function createCircleImageElement(src, alt) {
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = alt;
+    img.width = 100;
+    img.height = 100;
+    return img;
 }
+
 
 function resetAlgorithm() {
     clearResults();
@@ -426,7 +377,8 @@ function resetAlgorithm() {
         inputManPreferences.id = `man${i}`;
         inputManPreferences.placeholder = `preferences`;
 
-        const menCircle = createCircleElement('men-circle');
+        // const menCircle = createCircleElement('men-circle');
+        const menCircle = createCircleImageElement('images/boy.png', 'Man ${i}');
 
         menPreferencesContainer.appendChild(labelMan);
         menPreferencesContainer.appendChild(inputManName);
@@ -447,7 +399,8 @@ function resetAlgorithm() {
         inputWomanPreferences.id = `woman${i}`;
         inputWomanPreferences.placeholder = `preferences`;
 
-        const womenCircle = createCircleElement('women-circle');
+        // const womenCircle = createCircleElement('women-circle');
+        const womenCircle = createCircleImageElement('images/girl.png', 'Woman ${i}')
 
         womenPreferencesContainer.appendChild(labelWoman);
         womenPreferencesContainer.appendChild(inputWomanName);
