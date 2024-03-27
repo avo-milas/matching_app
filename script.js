@@ -365,20 +365,20 @@ function resetAlgorithm() {
     for (let i = 1; i <= pairsCnt; i++) {
         const labelMan = document.createElement('label');
         labelMan.htmlFor = `man${i}`;
-        labelMan.textContent = `M${i}:`;
+        // labelMan.textContent = `M${i}:`;
 
         const inputManName = document.createElement('input');
         inputManName.type = 'text';
         inputManName.id = `manName${i}`;
         inputManName.placeholder = `name`;
+        inputManName.value = `m${i}`;
 
         const inputManPreferences = document.createElement('input');
         inputManPreferences.type = 'text';
         inputManPreferences.id = `man${i}`;
         inputManPreferences.placeholder = `preferences`;
 
-        // const menCircle = createCircleElement('men-circle');
-        const menCircle = createCircleImageElement('images/boy.png', 'Man ${i}');
+        const menCircle = createCircleImageElement('images/boy.png', `M${i}`);
 
         menPreferencesContainer.appendChild(labelMan);
         menPreferencesContainer.appendChild(inputManName);
@@ -387,20 +387,20 @@ function resetAlgorithm() {
 
         const labelWoman = document.createElement('label');
         labelWoman.htmlFor = `woman${i}`;
-        labelWoman.textContent = `W${i}:`;
+        // labelWoman.textContent = `W${i}:`;
 
         const inputWomanName = document.createElement('input');
         inputWomanName.type = 'text';
         inputWomanName.id = `womanName${i}`;
         inputWomanName.placeholder = `name`;
+        inputWomanName.value = `w${i}`;
 
         const inputWomanPreferences = document.createElement('input');
         inputWomanPreferences.type = 'text';
         inputWomanPreferences.id = `woman${i}`;
         inputWomanPreferences.placeholder = `preferences`;
 
-        // const womenCircle = createCircleElement('women-circle');
-        const womenCircle = createCircleImageElement('images/girl.png', 'Woman ${i}')
+        const womenCircle = createCircleImageElement('images/girl.png', `W${i}`);
 
         womenPreferencesContainer.appendChild(labelWoman);
         womenPreferencesContainer.appendChild(inputWomanName);
@@ -408,6 +408,7 @@ function resetAlgorithm() {
         womenPreferencesContainer.appendChild(womenCircle);
     }
 }
+
 
 document.getElementById('newDataButton').addEventListener('click', resetAlgorithm);
 document.getElementById('resultButton').addEventListener('click', runAlgorithm);

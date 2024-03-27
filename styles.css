@@ -1,20 +1,54 @@
+button, input[type="text"], select, body {
+    border-radius: 6px;
+    border-width: 1px;
+    font-family: Courier, monospace;
+    font-size: 16px;
+}
+
+input[type="text"] {
+    font-family: Trebuchet MS, monospace;
+}
+
+#newPreferencesInput {
+    position: fixed;
+    top: 10;
+    left: 10;
+    width: 100%;
+}
+
+#pairsCountLabel,
+#pairsCount,
+#newDataButton {
+    margin: 10px;
+}
+
 #preferencesInput {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 60%;
+    background-color: rgb(119, 145, 202);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: flex-start;
+    height: 100vh;
+    max-height: 100%;
+    overflow-y: auto;
 }
 
 #menPreferences, #womenPreferences {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: 20px;
 }
 
-#buttonsContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 10px;
+label {
+    margin-bottom: 20px;
+}
+
+input {
+    margin-bottom: 5px;
 }
 
 #resultButton, #runWithStepsButton {
