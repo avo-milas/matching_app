@@ -11,7 +11,7 @@ input[type="text"] {
 
 #newPreferencesInput {
     position: fixed;
-    width: 100%;
+    width: 42%;
     top: 0;
     left: 0;
 }
@@ -19,6 +19,18 @@ input[type="text"] {
 #upperButtons {
     background-color: rgb(148,168,177);
     padding-bottom: 15px;
+}
+
+#randomizeButton {
+    text-align: center;
+    vertical-align: middle;
+    margin-left: 10px;
+    border: none;
+    outline: none;
+    background: none;
+    float: right;
+    margin-top: 7px;
+    margin-right: 4px;
 }
 
 #newPreferencesInput label[for="pairsCount"], #resultButton {
@@ -29,6 +41,7 @@ input[type="text"] {
 #pairsCount,
 #newDataButton {
     margin: 10px;
+    margin-right: 0px;
 }
 
 #resultButton, #runWithStepsButton, #nextStepButton {
@@ -36,10 +49,11 @@ input[type="text"] {
 }
 
 #results {
-    width: 40%;
+    width: 95%;
     overflow-y: auto;
     max-height: 85vh;
-    margin-left: 10px;
+    margin-left: 15px;
+    margin-right: 15px;
     padding-bottom: 20px;
 }
 
@@ -47,7 +61,7 @@ input[type="text"] {
     position: fixed;
     top: 0;
     right: 0;
-    width: 60%;
+    width: 58%;
     background-color: rgb(119, 145, 202);
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;

@@ -1,6 +1,6 @@
 let cachedResults = null;
 let cachedPreferences = null;
-let pairsCnt = 3;
+let pairsCnt = 0;
 let menNames = new Set();
 let womenNames = new Set();
 let menIndToName = {};
@@ -474,3 +474,44 @@ document.getElementById('resultButton').addEventListener('click', function() {
     runAlgorithm();
 });
 document.getElementById('runWithStepsButton').addEventListener('click', runAlgorithmWithSteps);
+
+
+
+document.getElementById('randomizeButton').addEventListener('click', function() {
+
+    clearResults();
+    clearConnectionLines();
+
+    const pairsCount = parseInt(document.getElementById('pairsCount').value);
+    if (pairsCount > 0) {
+
+        for (let i = 1; i <= pairsCount; i++) {
+            const preferences = [];
+            for (let j = 1; j <= pairsCount; j++) {
+                preferences.push(`w${j}`);
+            }
+            shuffleArray(preferences); // Перемешивание массива предпочтений
+            const input = document.getElementById(`man${i}`);
+            input.value = preferences.join(' ');
+        }
+
+        for (let i = 1; i <= pairsCount; i++) {
+            const preferences = [];
+            for (let j = 1; j <= pairsCount; j++) {
+                preferences.push(`m${j}`);
+            }
+            shuffleArray(preferences); // Перемешивание массива предпочтений
+            const input = document.getElementById(`woman${i}`);
+            input.value = preferences.join(' ');
+        }
+    } else {
+        alert('Введите число пар больше нуля.');
+    }
+});
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
