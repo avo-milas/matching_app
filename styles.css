@@ -11,15 +11,36 @@ input[type="text"] {
 
 #newPreferencesInput {
     position: fixed;
-    top: 10;
-    left: 10;
     width: 100%;
+    top: 0;
+    left: 0;
+}
+
+#upperButtons {
+    background-color: rgb(148,168,177);
+    padding-bottom: 15px;
+}
+
+#newPreferencesInput label[for="pairsCount"], #resultButton {
+    margin-left: 10px;
 }
 
 #pairsCountLabel,
 #pairsCount,
 #newDataButton {
     margin: 10px;
+}
+
+#resultButton, #runWithStepsButton, #nextStepButton {
+    margin-top: 5px;
+}
+
+#results {
+    width: 40%;
+    overflow-y: auto;
+    max-height: 85vh;
+    margin-left: 10px;
+    padding-bottom: 20px;
 }
 
 #preferencesInput {
@@ -29,18 +50,24 @@ input[type="text"] {
     width: 60%;
     background-color: rgb(119, 145, 202);
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     align-items: flex-start;
     height: 100vh;
     max-height: 100%;
     overflow-y: auto;
 }
 
-#menPreferences, #womenPreferences {
+#menPreferences, #womenPreferences, #connectionLines {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 20px;
+    border-radius: 10px;
+}
+
+#connectionLines {
+    height: 100%;
+    background-color: #dfeaee;
 }
 
 label {
@@ -51,6 +78,6 @@ input {
     margin-bottom: 5px;
 }
 
-#resultButton, #runWithStepsButton {
-    margin-top: 5px;
+img {
+    margin-bottom: 15px;
 }

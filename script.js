@@ -7,6 +7,7 @@ let menIndToName = {};
 let menNameToInd = {};
 let womenIndToName = {};
 let womenNameToInd = {};
+let nextStepButton = null;
 
 // Операции с предпочтениями и именами /////
 
@@ -14,13 +15,11 @@ function areSetsEqual(set1, set2) {
     if (set1.size !== set2.size) {
         return false;
     }
-
     for (const item of set1) {
         if (!set2.has(item)) {
             return false;
         }
     }
-
     return true;
 }
 
@@ -49,19 +48,6 @@ function mapNames() {
             return false;
         }
     }
-
-    console.log(menIndToName);
-    console.log(menNameToInd);
-
-    console.log(womenIndToName);
-    console.log(womenNameToInd);
-
-    console.log(pairsCnt);
-    console.log(womenNames.size);
-    console.log(menNames.size);
-
-    console.log(womenNames);
-    console.log(menNames);
 
     if (womenNames.size != pairsCnt || menNames.size != pairsCnt) {
         alert('Имена должны быть уникальными!');
@@ -192,7 +178,18 @@ function displayPairs(pairs) {
 function clearResults() {
     const resultsContainer = document.getElementById('results');
     resultsContainer.innerHTML = '';
+
+    if (nextStepButton) {
+        nextStepButton.remove();
+        nextStepButton = null; // Очищаем ссылку после удаления кнопки
+    }
 }
+
+function clearConnectionLines() {
+    const connectionLines = document.getElementById("connectionLines");
+    connectionLines.innerHTML = '';
+}
+
 /////////////////////////////////
 
 function galeShapleyWithSteps(menPrefs, womenPrefs) {
@@ -202,12 +199,14 @@ function galeShapleyWithSteps(menPrefs, womenPrefs) {
     let stablePairs = {};
     let proposals = {};
     let algorithmSteps = [];
+    let algorithmLines = [];
 
     let currentSimulationStep = 1; // Шаг симуляции: 1 - мужчины делают предложения, 2 - женщины выбирают
 
     while (engagedMen.size < menCount) {
         console.log(`------new iter ${currentSimulationStep}`)
-        let cur_actions = []
+        let cur_actions = [];
+        let cur_lines = [];
         if (currentSimulationStep === 1) {
 
             // Мужчины делают предложения
@@ -220,6 +219,7 @@ function galeShapleyWithSteps(menPrefs, womenPrefs) {
                     const actionDescription = `${menIndToName[man]} proposes to ${womenIndToName[woman]}`;
                     console.log(actionDescription)
                     cur_actions.push(actionDescription);
+                    cur_lines.push([man, woman]);
 
                     if (!proposals[woman]) {
                         proposals[woman] = [man];
@@ -245,6 +245,7 @@ function galeShapleyWithSteps(menPrefs, womenPrefs) {
                         const actionDescription = `${menIndToName[rejectedMan]} is rejected by ${womenIndToName[woman]}`;
                         console.log(actionDescription);
                         cur_actions.push(actionDescription);
+                        cur_lines.push([rejectedMan, woman]);
                         stablePairs[rejectedMan] = null;
                         engagedMen.delete(rejectedMan);
                     }
@@ -255,15 +256,18 @@ function galeShapleyWithSteps(menPrefs, womenPrefs) {
         }
 
         algorithmSteps.push(cur_actions);
+        algorithmLines.push(cur_lines);
         cur_actions = [];
+        cur_lines = [];
         currentSimulationStep = currentSimulationStep === 1 ? 2 : 1; // Переключение сторон
     }
 
-    return { pairs: stablePairs, steps: algorithmSteps };
+    return { pairs: stablePairs, steps: algorithmSteps, lines: algorithmLines};
 }
 
 function runAlgorithm() {
     clearResults();
+    clearConnectionLines();
 
     if (!mapNames()) {
         menNames.clear();
@@ -293,12 +297,21 @@ function runAlgorithm() {
         }
     }
 
-    const { pairs, steps } = cachedResults;
+    const { pairs, steps, lines } = cachedResults;
+
     displayPairs(pairs);
+
+    for (const m in pairs) {
+
+        showConnectionLine(m, pairs[m], 0);
+    }
+
 }
+
 
 function runAlgorithmWithSteps() {
     clearResults();
+    clearConnectionLines();
     if (!mapNames()) {
         return;
     }
@@ -317,27 +330,72 @@ function runAlgorithmWithSteps() {
         }
     }
 
-    const { pairs, steps } = cachedResults;
+    const { pairs, steps, lines } = cachedResults;
 
     let currentStepIndex = 0;
 
     function displayNextStep() {
+
         if (currentStepIndex < steps.length - 1) {
+
             const step = steps[currentStepIndex];
+            const line = lines[currentStepIndex];
             const resultElement = document.createElement('p');
             resultElement.innerHTML = `<strong>Шаг ${currentStepIndex + 1}:</strong> ${step.join('; ')}`;
             document.getElementById('results').appendChild(resultElement);
+
+            line.forEach(pair => {
+                const [manIndex, womanIndex] = pair;
+                showConnectionLine(manIndex, womanIndex, currentStepIndex);
+            });
+
             currentStepIndex++;
+
         } else {
             alert('Больше шагов нет!');
         }
     }
 
-    const nextStepButton = document.createElement('button');
+    nextStepButton = document.createElement('button');
     nextStepButton.textContent = 'Следующий шаг';
     nextStepButton.onclick = displayNextStep;
-    document.getElementById('results').appendChild(nextStepButton);
+    document.getElementById('buttonsContainer').appendChild(nextStepButton);    
 }
+
+
+function showConnectionLine(manIndex, womanIndex, stepIndex) {
+        const menPreferences = document.getElementById("menPreferences");
+        const womenPreferences = document.getElementById("womenPreferences");
+        const connectionLines = document.getElementById("connectionLines");
+
+        const manElement = menPreferences.children[4 * manIndex - 1];
+        const womanElement = womenPreferences.children[4 * womanIndex - 1];
+        const manRect = manElement.getBoundingClientRect();
+        const womanRect = womanElement.getBoundingClientRect();
+
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        
+        const startY = manRect.y - menPreferences.getBoundingClientRect().y + manRect.height / 2;
+        const endY = womanRect.y - womenPreferences.getBoundingClientRect().y + womanRect.height / 2;
+
+        line.setAttribute("x1", 0);
+        line.setAttribute("y1", startY);
+        line.setAttribute("x2", connectionLines.clientWidth);
+        line.setAttribute("y2", endY);
+        line.setAttribute("stroke-width", "6");
+
+        if (stepIndex % 2 === 0) {
+            line.setAttribute("stroke", "#94a8b1");
+        } else {
+            line.setAttribute("stroke", "#dfeaee");
+        }
+
+        connectionLines.appendChild(line);
+
+        line.setAttribute("stroke-dasharray", "0 " + line.getTotalLength());
+        line.style.transition = "stroke-dasharray 1s ease";
+        line.setAttribute("stroke-dasharray", line.getTotalLength() + " 0");
+    }
 
 
 function createCircleImageElement(src, alt) {
@@ -352,6 +410,7 @@ function createCircleImageElement(src, alt) {
 
 function resetAlgorithm() {
     clearResults();
+    clearConnectionLines();
     cachedResults = null;
 
     pairsCnt = parseInt(document.getElementById('pairsCount').value, 10);
@@ -411,5 +470,7 @@ function resetAlgorithm() {
 
 
 document.getElementById('newDataButton').addEventListener('click', resetAlgorithm);
-document.getElementById('resultButton').addEventListener('click', runAlgorithm);
+document.getElementById('resultButton').addEventListener('click', function() {
+    runAlgorithm();
+});
 document.getElementById('runWithStepsButton').addEventListener('click', runAlgorithmWithSteps);
