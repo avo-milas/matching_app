@@ -110,7 +110,10 @@ function checkPreferences(menPrefs, womenPrefs) {
 
 function checkPreferencesChanged() {
     const menPreferences = getPreferences('man');
-    const womenPreferences = getPreferences('woman');
+    let womenPreferences = {};
+    if (menPreferences) {
+        womenPreferences = getPreferences('woman');
+    }
 
     if (!(menPreferences && womenPreferences)) {
         return "false preferences";
