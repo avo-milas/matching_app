@@ -2,92 +2,134 @@ button, input[type="text"], select, body {
     border-radius: 6px;
     border-width: 1px;
     font-family: Courier, monospace;
-    /* font-family: Verdana; */
     font-size: 18px;
-}
-
-body {
-    /* background-color: #9fbedf; */
-    /* background-image: linear-gradient(to left, #9fbedf, #7791ca); */
-    /* background-image: linear-gradient(to left, #ff6347, #7791ca); */
-    background-image: linear-gradient(to right,  rgb(235, 246, 248), #1c2332);
 }
 
 input[type="text"] {
     font-family: Trebuchet MS, monospace;
-    /* font-family: Courier, monospace; */
-    /* background-color: #dfeaee; */
+    border-radius: 6px;
+    border-width: 1px;
+    font-size: 18px;
 }
+
+body {
+    background-image: linear-gradient(to right,  rgb(216, 246, 251), #1c2332);
+}
+
+p {
+    top: 15px;
+    left: 10px;
+    margin-bottom: 20px;
+    margin-top: 0px;
+    margin-bottom: 10px;
+}
+
+input {
+    margin-bottom: 5px;
+}
+
+img {
+    margin-bottom: 15px;
+}
+
+#infoButton, button {
+    cursor: pointer;
+}
+
+#infoButton, button, img {
+    transition: transform 0.3s ease;
+}
+
+#infoButton:hover, button:hover, img:hover {
+    transform: scale(1.05);
+}
+
 
 #newPreferencesInput {
     position: fixed;
     width: 42%;
     top: 0;
     left: 0;
-    /* background-image: linear-gradient(to right,  #9fbedf, #7791ca); */
-    /* background-color: #9fbedf; */
-}
-
-p {
-    /* position: relative; */
-    top: 15px;
-    left: 10px;
-    margin-bottom: 20px;
-    margin-top: 0px;
-    /* font-weight: bold;
-    font-size: 24px; */
-    margin-bottom: 10px;
 }
 
 #upperButtons {
-    /* background-color: rgb(148,168,177); */
-    /* background-color: #9fbedf; */
     padding-bottom: 20px;
     padding-top: 20px;
     padding-left: 10px;
 }
 
 #infoButton {
-    /* text-align: center; */
-    /* vertical-align: middle; */
-    /* margin-left: 10px; */
     border: none;
     outline: none;
     background: none;
     float: right;
     margin-top: 0px;
-    /* margin-right: 4px; */
+}
+
+.modal {
+    display: none;
+    position: fixed; 
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.4);
+}
+  
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; 
+    animation-name: slideIn;
+    animation-duration: 0.5s;
+}
+
+@keyframes slideIn {
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover, .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 #randomizeButton {
-    text-align: center;
-    vertical-align: middle;
     margin-left: 10px;
     border: none;
     outline: none;
     background: none;
-    float: right;
     margin-top: 7px;
     margin-right: 4px;
 }
 
-/* #newPreferencesInput label[for="pairsCount"], #resultButton {
-    margin-left: 10px;
-} */
-
-#pairsCountLabel,
-#pairsCount,
-#newDataButton {
+#pairsCountLabel, #pairsCount, #newDataButton {
     margin: 10px;
     top: 10px;
     margin-right: 0px;
-    /* background: rgb(217, 235, 255); */
 }
 
 #resultButton, #runWithStepsButton, #nextStepButton {
     margin-top: 5px;
     transition: background-color 0.1s;
-    /* background: rgb(217, 235, 255); */
 }
   
 #resultButton:active,
@@ -100,7 +142,8 @@ p {
 
 #randomizeButton:active, #infoButton:active {
     transform: translateY(1px);
-  }
+}
+
 
 #results {
     width: 95%;
@@ -113,12 +156,37 @@ p {
     font-size: 20px;
 }
 
+.table {
+    width: 90%;
+    border: none;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    margin-left: 20px;
+}
+  
+.table th, .table td {
+    padding: 10px;
+    font-size: 24px;
+    line-height: 20px;
+    color: #1c2332;
+    border-top: none;
+    border-bottom: 2px solid #64708b;
+}
+  
+.table th {
+    font-weight: bold;
+    font-size: 30px;
+    text-align: left;
+    color: #373f52;
+    border-top: none;
+}
+
+
 #preferencesInput {
     position: fixed;
     top: 0;
     right: 0;
     width: 58%;
-    /* background-color: #7791ca; */
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     align-items: flex-start;
@@ -139,111 +207,15 @@ p {
     height: 100%;
     display: none;
     background-color: #dfeaee;
-    animation-name: fadeIn; /* название анимации */
-    animation-duration: 0.5s; /* длительность анимации */
+    animation-name: fadeIn;
+    animation-duration: 0.5s;
 }
 
 @keyframes fadeIn {
     from {
-        opacity: 0; /* Начальная непрозрачность */
+        opacity: 0;
     }
     to {
-        opacity: 1; /* Конечная непрозрачность */
+        opacity: 1;
     }
-}
-
-label {
-    margin-bottom: 20px;
-}
-
-input {
-    margin-bottom: 5px;
-}
-
-img {
-    margin-bottom: 15px;
-}
-
-
-.table {
-    width: 90%;
-    border: none;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    margin-left: 20px;
-  }
-  
-  .table th, .table td {
-    padding: 10px;
-    font-size: 24px;
-    line-height: 20px;
-    color: #444441;
-    border-top: none;
-    border-bottom: 2px solid #716561;
-  }
-  
-  .table th {
-    font-weight: bold;
-    font-size: 30px;
-    text-align: left;
-    color: #444441;
-    border-top: none;
-  }
-  
-
-.modal {
-    display: none;
-    position: fixed; 
-    z-index: 1; 
-    left: 0;
-    top: 0;
-    width: 100%; 
-    height: 100%; 
-    overflow: auto; 
-    background-color: rgba(0,0,0,0.4);
-  }
-  
-  .modal-content {
-    background-color: #fefefe;
-    margin: 10% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; 
-    animation-name: slideIn;
-    animation-duration: 0.5s;
-  }
-  
-  @keyframes slideIn {
-    from {
-      transform: translateY(-100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-  
-
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-
-#infoButton, button, img {
-    transition: transform 0.3s ease; /* Плавное изменение при наведении */
-}
-
-#infoButton:hover, button:hover, img:hover {
-    transform: scale(1.05); /* Увеличиваем размер при наведении */
 }

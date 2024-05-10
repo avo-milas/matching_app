@@ -9,19 +9,29 @@ let womenIndToName = {};
 let womenNameToInd = {};
 let nextStepButton = null;
 
-// Операции с предпочтениями и именами /////
+
+function showInfo() {
+    document.getElementById("infoModal").style.display = "block";
+}
+
+function closeInfoModal() {
+    document.getElementById("infoModal").style.display = "none";
+}
 
 function areSetsEqual(set1, set2) {
-    if (set1.size !== set2.size) {
-        return false;
-    }
+    if (set1.size !== set2.size) {return false}
     for (const item of set1) {
-        if (!set2.has(item)) {
-            return false;
-        }
+        if (!set2.has(item)) {return false}
     }
     return true;
 }
+
+function isEqual(obj1, obj2) {
+    return JSON.stringify(obj1) === JSON.stringify(obj2);
+}
+
+
+// Операции с предпочтениями и именами //
 
 function mapNames() {
     menNames.clear();
@@ -29,7 +39,9 @@ function mapNames() {
 
     for (let i = 1; i <= pairsCnt; i++) {
         let manName = document.getElementById(`manName${i}`).value;
-        if (manName !== null) {
+        let womanName = document.getElementById(`womanName${i}`).value;
+
+        if (manName !== "") {
             menIndToName[i] = manName;
             menNameToInd[manName] = i;
             menNames.add(manName);
@@ -38,8 +50,7 @@ function mapNames() {
             return false;
         }
 
-        let womanName = document.getElementById(`womanName${i}`).value;
-        if (manName !== null) {
+        if (womanName !== "") {
             womenIndToName[i] = womanName;
             womenNameToInd[womanName] = i;
             womenNames.add(womanName);
@@ -57,54 +68,35 @@ function mapNames() {
     return true;
 }
 
-function menParsePreferences(input) {
+
+function parsePreferences(input, prefix) {
     let names_prefs = input.split(' ').map(item => item.trim());
     let cur_prefs_names = new Set();
+
     for (let name of names_prefs) {
         cur_prefs_names.add(name);
     }
 
-    if (!areSetsEqual(cur_prefs_names, womenNames)) {
-        alert('Предпочтения одной стороны должны быть согласованы с именами другой!');
-        return false;
-    }
-    let prefs = names_prefs.map(item => womenNameToInd[item]);
-    return prefs;
-}
+    let setNames = (prefix === "man") ? womenNames : menNames;
+    let nameToInd = (prefix === "man") ? womenNameToInd : menNameToInd;
 
-function womenParsePreferences(input) {
-    let names_prefs = input.split(' ').map(item => item.trim());
-    let cur_prefs_names = new Set();
-    for (let name of names_prefs) {
-        cur_prefs_names.add(name);
-    }
-    if (!areSetsEqual(cur_prefs_names, menNames)) {
+    if (!areSetsEqual(cur_prefs_names, setNames)) {
         alert('Предпочтения одной стороны должны быть согласованы с именами другой!');
         return false;
     }
-    let prefs = names_prefs.map(item => menNameToInd[item]);
+
+    let prefs = names_prefs.map(item => nameToInd[item]);
     return prefs;
 }
 
 function getPreferences(prefix) {
     const preferences = {};
+
     for (let i = 1; i <= pairsCnt; i++) {
         const id = `${prefix}${i}`;
-        if (prefix === 'man') {
-            let fm = menParsePreferences(document.getElementById(id).value);
-            if (fm) {
-                preferences[i] = fm;
-            } else {
-                return false;
-            }
-        } else {
-            let fw = womenParsePreferences(document.getElementById(id).value);
-            if (fw) {
-                preferences[i] = fw;
-            } else {
-                return false;
-            }
-        }
+        let f = parsePreferences(document.getElementById(id).value, prefix);
+        if (f) { preferences[i] = f }
+        else { return false }
     }
     return preferences;
 }
@@ -113,26 +105,7 @@ function checkPreferences(menPrefs, womenPrefs) {
     if (menPrefs == {} || womenPrefs == {}) {
         alert('Предпочтения не должны быть пустыми!');
         return false;
-    } else {
-        // console.log(menPrefs);
-        // for (let i = 1; i <= pairsCnt; ++i) {
-        //     let mp = menPrefs[i];
-        //     let wp = new Set(womenPrefs[i]);
-        //     console.log(womenNames);
-        //     console.log(menNames);
-        //     console.log(mp);
-        //     console.log(wp);
-        //     if (!areSetsEqual(mp, womenNames) || !areSetsEqual(wp, menNames)) {
-        //         alert('Все предпочтения должны быть указаны правильно!');
-        //         return false;
-        //     }
-        // }
-        return true;
-    }
-}
-
-function isEqual(obj1, obj2) {
-    return JSON.stringify(obj1) === JSON.stringify(obj2);
+    } else { return true }
 }
 
 function checkPreferencesChanged() {
@@ -148,32 +121,117 @@ function checkPreferencesChanged() {
         cachedResults = null;
         return true;
     }
-
     return false;
 }
-/////////////////////////////////
 
-function isEngaged(woman, stablePairs) {
-    return Object.values(stablePairs).includes(woman);
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
 }
 
-// отображение результатов ///////
-// function displayPairs(pairs) {
-//     const resultsContainer = document.getElementById('results');
-//     const menCnt = Object.keys(pairs).length;
-//     if (menCnt === 0) {
-//         resultsContainer.innerHTML = '<p>No stable pairs found.</p>';
-//     } else {
-//         resultsContainer.innerHTML = '<h2>Stable pairs:</h2>';
-//         for (let i = 1; i <= menCnt; i++) {
-//             // const man = Object.keys(pairs)[i - 1];
-//             const woman = pairs[i];
-//             const resultElement = document.createElement('p');
-//             resultElement.innerHTML = `<strong>Pair ${i}:</strong> ${menIndToName[i]} - ${womenIndToName[woman]}`;
-//             resultsContainer.appendChild(resultElement);
-//         }
-//     }
-// }
+function randomizePreferences() {
+    clearResults();
+    clearConnectionLines();
+    mapNames();
+
+    const pairsCount = parseInt(document.getElementById('pairsCount').value);
+    if (pairsCount > 0) {
+
+        for (let i = 1; i <= pairsCount; i++) {
+            const preferences = [];
+            for (let j = 1; j <= pairsCount; j++) {
+                preferences.push(`${womenIndToName[j]}`);
+            }
+            shuffleArray(preferences);
+            const input = document.getElementById(`man${i}`);
+            input.value = preferences.join(' ');
+        }
+
+        for (let i = 1; i <= pairsCount; i++) {
+            const preferences = [];
+            for (let j = 1; j <= pairsCount; j++) {
+                preferences.push(`${menIndToName[j]}`);
+            }
+            shuffleArray(preferences);
+            const input = document.getElementById(`woman${i}`);
+            input.value = preferences.join(' ');
+        }
+    } else {
+        alert('Введите число пар больше нуля.');
+    }
+}
+
+
+// Отображение результатов //
+
+function createCircleImageElement(src, alt) {
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = alt;
+    img.width = 100;
+    img.height = 100;
+    return img;
+}
+
+function resetAlgorithm() {
+    clearResults();
+    clearConnectionLines();
+    cachedResults = null;
+
+    pairsCnt = parseInt(document.getElementById('pairsCount').value, 10);
+
+    const menPreferencesContainer = document.getElementById('menPreferences');
+    const womenPreferencesContainer = document.getElementById('womenPreferences');
+
+    menPreferencesContainer.innerHTML = '';
+    womenPreferencesContainer.innerHTML = '';
+
+    for (let i = 1; i <= pairsCnt; i++) {
+        const labelMan = document.createElement('label');
+        labelMan.htmlFor = `man${i}`;
+
+        const inputManName = document.createElement('input');
+        inputManName.type = 'text';
+        inputManName.id = `manName${i}`;
+        inputManName.placeholder = `name`;
+        inputManName.value = `m${i}`;
+
+        const inputManPreferences = document.createElement('input');
+        inputManPreferences.type = 'text';
+        inputManPreferences.id = `man${i}`;
+        inputManPreferences.placeholder = `preferences`;
+
+        const menCircle = createCircleImageElement('images/boy.png', `M${i}`);
+
+        menPreferencesContainer.appendChild(labelMan);
+        menPreferencesContainer.appendChild(inputManName);
+        menPreferencesContainer.appendChild(inputManPreferences);
+        menPreferencesContainer.appendChild(menCircle);
+
+        const labelWoman = document.createElement('label');
+        labelWoman.htmlFor = `woman${i}`;
+        
+        const inputWomanName = document.createElement('input');
+        inputWomanName.type = 'text';
+        inputWomanName.id = `womanName${i}`;
+        inputWomanName.placeholder = `name`;
+        inputWomanName.value = `w${i}`;
+
+        const inputWomanPreferences = document.createElement('input');
+        inputWomanPreferences.type = 'text';
+        inputWomanPreferences.id = `woman${i}`;
+        inputWomanPreferences.placeholder = `preferences`;
+
+        const womenCircle = createCircleImageElement('images/girl.png', `W${i}`);
+
+        womenPreferencesContainer.appendChild(labelWoman);
+        womenPreferencesContainer.appendChild(inputWomanName);
+        womenPreferencesContainer.appendChild(inputWomanPreferences);
+        womenPreferencesContainer.appendChild(womenCircle);
+    }
+}
 
 function displayPairs(pairs) {
     const resultsContainer = document.getElementById('results');
@@ -181,7 +239,6 @@ function displayPairs(pairs) {
     if (menCnt === 0) {
         resultsContainer.innerHTML = '<p>No stable pairs found.</p>';
     } else {
-        // resultsContainer.innerHTML = '<h2>Stable pairs:</h2>';
         const table = document.createElement('table');
         table.classList.add('table');
         const headerRow = document.createElement('tr');
@@ -208,16 +265,47 @@ function displayPairs(pairs) {
     }
 }
 
-
-
 function clearResults() {
     const resultsContainer = document.getElementById('results');
     resultsContainer.innerHTML = '';
 
     if (nextStepButton) {
         nextStepButton.remove();
-        nextStepButton = null; // Очищаем ссылку после удаления кнопки
+        nextStepButton = null;
     }
+}
+
+function showConnectionLine(manIndex, womanIndex, stepIndex) {
+    const menPreferences = document.getElementById("menPreferences");
+    const womenPreferences = document.getElementById("womenPreferences");
+    const connectionLines = document.getElementById("connectionLines");
+
+    const manElement = menPreferences.children[4 * manIndex - 1];
+    const womanElement = womenPreferences.children[4 * womanIndex - 1];
+    const manRect = manElement.getBoundingClientRect();
+    const womanRect = womanElement.getBoundingClientRect();
+
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    
+    const startY = manRect.y - menPreferences.getBoundingClientRect().y + manRect.height / 2;
+    const endY = womanRect.y - womenPreferences.getBoundingClientRect().y + womanRect.height / 2;
+
+    line.setAttribute("x1", 0);
+    line.setAttribute("y1", startY);
+    line.setAttribute("x2", connectionLines.clientWidth);
+    line.setAttribute("y2", endY);
+    line.setAttribute("stroke-width", "4");
+
+    if (stepIndex % 2 === 0) {
+        line.setAttribute("stroke", "#1c2332");
+    } else {
+        line.setAttribute("stroke", "#dfeaee");
+    }
+
+    connectionLines.appendChild(line);
+    line.setAttribute("stroke-dasharray", "0 " + line.getTotalLength());
+    line.style.transition = "stroke-dasharray 1s ease";
+    line.setAttribute("stroke-dasharray", line.getTotalLength() + " 0");
 }
 
 function clearConnectionLines() {
@@ -225,7 +313,12 @@ function clearConnectionLines() {
     connectionLines.innerHTML = '';
 }
 
-/////////////////////////////////
+
+// Алгоритм Гэйла-Шепли //
+
+function isEngaged(woman, stablePairs) {
+    return Object.values(stablePairs).includes(woman);
+}
 
 function galeShapleyWithSteps(menPrefs, womenPrefs) {
 
@@ -236,10 +329,10 @@ function galeShapleyWithSteps(menPrefs, womenPrefs) {
     let algorithmSteps = [];
     let algorithmLines = [];
 
-    let currentSimulationStep = 1; // Шаг симуляции: 1 - мужчины делают предложения, 2 - женщины выбирают
-
+    // Шаг симуляции: 1 - мужчины делают предложения, 2 - женщины выбирают
+    let currentSimulationStep = 1;
+    
     while (engagedMen.size < menCount) {
-        console.log(`------new iter ${currentSimulationStep}`)
         let cur_actions = [];
         let cur_lines = [];
         if (currentSimulationStep === 1) {
@@ -284,7 +377,6 @@ function galeShapleyWithSteps(menPrefs, womenPrefs) {
                         stablePairs[rejectedMan] = null;
                         engagedMen.delete(rejectedMan);
                     }
-
                     proposals[woman] = [man];
                 }
             }
@@ -301,6 +393,7 @@ function galeShapleyWithSteps(menPrefs, womenPrefs) {
 }
 
 function runAlgorithm() {
+
     clearResults();
     clearConnectionLines();
 
@@ -310,22 +403,12 @@ function runAlgorithm() {
         return;
     }
 
-    console.log("--------");
-    console.log(womenNames);
-    console.log(menNames);
-
     let cpc = checkPreferencesChanged();
-    
     if (cpc === "false preferences") {
         return;
     } else if (cpc || !cachedResults) {
 
         if (checkPreferences(cachedPreferences.men, cachedPreferences.women)) {
-            console.log("GS algo---");
-            console.log(`men:`);
-            console.log(cachedPreferences.men);
-            console.log(`women:`);
-            console.log(cachedPreferences.women);
             cachedResults = galeShapleyWithSteps(cachedPreferences.men, cachedPreferences.women);
         } else {
             return;
@@ -337,14 +420,12 @@ function runAlgorithm() {
     displayPairs(pairs);
 
     for (const m in pairs) {
-
         showConnectionLine(m, pairs[m], 0);
     }
-
 }
 
-
 function runAlgorithmWithSteps() {
+
     clearResults();
     clearConnectionLines();
     if (!mapNames()) {
@@ -383,9 +464,7 @@ function runAlgorithmWithSteps() {
                 const [manIndex, womanIndex] = pair;
                 showConnectionLine(manIndex, womanIndex, currentStepIndex);
             });
-
             currentStepIndex++;
-
         } else {
             alert('Больше шагов нет!');
         }
@@ -399,174 +478,11 @@ function runAlgorithmWithSteps() {
 }
 
 
-function showConnectionLine(manIndex, womanIndex, stepIndex) {
-        const menPreferences = document.getElementById("menPreferences");
-        const womenPreferences = document.getElementById("womenPreferences");
-        const connectionLines = document.getElementById("connectionLines");
-
-        const manElement = menPreferences.children[4 * manIndex - 1];
-        const womanElement = womenPreferences.children[4 * womanIndex - 1];
-        const manRect = manElement.getBoundingClientRect();
-        const womanRect = womanElement.getBoundingClientRect();
-
-        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        
-        const startY = manRect.y - menPreferences.getBoundingClientRect().y + manRect.height / 2;
-        const endY = womanRect.y - womenPreferences.getBoundingClientRect().y + womanRect.height / 2;
-
-        line.setAttribute("x1", 0);
-        line.setAttribute("y1", startY);
-        line.setAttribute("x2", connectionLines.clientWidth);
-        line.setAttribute("y2", endY);
-        line.setAttribute("stroke-width", "4");
-
-        if (stepIndex % 2 === 0) {
-            // line.setAttribute("stroke", "#94a8b1");
-            line.setAttribute("stroke", "#1c2332");
-        } else {
-            line.setAttribute("stroke", "#dfeaee");
-            // line.setAttribute("stroke", "#7791ca");
-        }
-
-        connectionLines.appendChild(line);
-
-        line.setAttribute("stroke-dasharray", "0 " + line.getTotalLength());
-        line.style.transition = "stroke-dasharray 1s ease";
-        line.setAttribute("stroke-dasharray", line.getTotalLength() + " 0");
-    }
-
-
-function createCircleImageElement(src, alt) {
-    const img = document.createElement('img');
-    img.src = src;
-    img.alt = alt;
-    img.width = 100;
-    img.height = 100;
-    return img;
-}
-
-
-function resetAlgorithm() {
-    clearResults();
-    clearConnectionLines();
-    cachedResults = null;
-
-    pairsCnt = parseInt(document.getElementById('pairsCount').value, 10);
-
-    const menPreferencesContainer = document.getElementById('menPreferences');
-    const womenPreferencesContainer = document.getElementById('womenPreferences');
-
-    menPreferencesContainer.innerHTML = '';
-    womenPreferencesContainer.innerHTML = '';
-
-    for (let i = 1; i <= pairsCnt; i++) {
-        const labelMan = document.createElement('label');
-        labelMan.htmlFor = `man${i}`;
-        // labelMan.textContent = `M${i}:`;
-
-        const inputManName = document.createElement('input');
-        inputManName.type = 'text';
-        inputManName.id = `manName${i}`;
-        inputManName.placeholder = `name`;
-        inputManName.value = `m${i}`;
-
-        const inputManPreferences = document.createElement('input');
-        inputManPreferences.type = 'text';
-        inputManPreferences.id = `man${i}`;
-        inputManPreferences.placeholder = `preferences`;
-
-        const menCircle = createCircleImageElement('images/boy.png', `M${i}`);
-
-        menPreferencesContainer.appendChild(labelMan);
-        menPreferencesContainer.appendChild(inputManName);
-        menPreferencesContainer.appendChild(inputManPreferences);
-        menPreferencesContainer.appendChild(menCircle);
-
-        const labelWoman = document.createElement('label');
-        labelWoman.htmlFor = `woman${i}`;
-        // labelWoman.textContent = `W${i}:`;
-
-        const inputWomanName = document.createElement('input');
-        inputWomanName.type = 'text';
-        inputWomanName.id = `womanName${i}`;
-        inputWomanName.placeholder = `name`;
-        inputWomanName.value = `w${i}`;
-
-        const inputWomanPreferences = document.createElement('input');
-        inputWomanPreferences.type = 'text';
-        inputWomanPreferences.id = `woman${i}`;
-        inputWomanPreferences.placeholder = `preferences`;
-
-        const womenCircle = createCircleImageElement('images/girl.png', `W${i}`);
-
-        womenPreferencesContainer.appendChild(labelWoman);
-        womenPreferencesContainer.appendChild(inputWomanName);
-        womenPreferencesContainer.appendChild(inputWomanPreferences);
-        womenPreferencesContainer.appendChild(womenCircle);
-    }
-}
-
-
-document.getElementById('newDataButton').addEventListener('click', resetAlgorithm);
 const connectionLines = document.getElementById('connectionLines');
 document.getElementById('newDataButton').addEventListener('click', function() {
     connectionLines.style.display = 'block';
+    resetAlgorithm();
 });
-
-document.getElementById('resultButton').addEventListener('click', function() {
-    runAlgorithm();
-});
+document.getElementById('randomizeButton').addEventListener('click', randomizePreferences);
+document.getElementById('resultButton').addEventListener('click', runAlgorithm);
 document.getElementById('runWithStepsButton').addEventListener('click', runAlgorithmWithSteps);
-
-
-
-document.getElementById('randomizeButton').addEventListener('click', function() {
-
-    clearResults();
-    clearConnectionLines();
-
-    mapNames();
-
-    const pairsCount = parseInt(document.getElementById('pairsCount').value);
-    if (pairsCount > 0) {
-
-        for (let i = 1; i <= pairsCount; i++) {
-            const preferences = [];
-            for (let j = 1; j <= pairsCount; j++) {
-                preferences.push(`${womenIndToName[j]}`);
-            }
-            shuffleArray(preferences); // Перемешивание массива предпочтений
-            const input = document.getElementById(`man${i}`);
-            input.value = preferences.join(' ');
-        }
-
-        for (let i = 1; i <= pairsCount; i++) {
-            const preferences = [];
-            for (let j = 1; j <= pairsCount; j++) {
-                preferences.push(`${menIndToName[j]}`);
-            }
-            shuffleArray(preferences); // Перемешивание массива предпочтений
-            const input = document.getElementById(`woman${i}`);
-            input.value = preferences.join(' ');
-        }
-    } else {
-        alert('Введите число пар больше нуля.');
-    }
-});
-
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-}
-
-
-function showInformation() {
-    document.getElementById("informationModal").style.display = "block";
-}
-
-function closeInformationModal() {
-    document.getElementById("informationModal").style.display = "none";
-}
-
