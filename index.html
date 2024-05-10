@@ -6,23 +6,31 @@
     <title>Gale-Shapley Algorithm</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
 
+<body>
     <div id="newPreferencesInput">
 
         <div id="upperButtons">
+            
+            <div style="display: flex; align-items: center;"> 
+                <p style="font-weight: bold; font-size: 40px; margin-left: 20px; color: #3e4d6d; margin-right: 30px;">Gale-Shapley Algorithm</p>
 
-            <label for="pairsCount">Число пар:</label>
+                <div id="infoButton" onclick="showInformation()" style="margin-top: 15px">
+                    <img src="images/info.png" alt="info" width="30" height="30">
+                </div>
+            </div>
+
+            <label for="pairsCount">Pairs count:</label>
             <input type="number" id="pairsCount" placeholder="0">
-            <button id="newDataButton">Задать новые предпочтения</button>
+            <button id="newDataButton">Set new preference</button>
 
             <button id="randomizeButton">
-                <img src="images/dices.png" alt="dice" width="50" height="50">
+                <img src="images/dices.PNG" alt="dice" width="50" height="50">
             </button>
 
             <div id="buttonsContainer">
-                <button id="resultButton">Показать результат</button>
-                <button id="runWithStepsButton">Запустить по шагам</button>
+                <button id="resultButton">Show results</button>
+                <button id="runWithStepsButton">Step by step</button>
             </div>
 
         </div>
@@ -38,6 +46,22 @@
         <svg id="connectionLines" width="100%" height="100%"></svg>
         <div id="womenPreferences"></div>
         
+    </div>
+
+    <div id="informationModal" class="modal">
+        <div class="modal-content" style="text-align: center;">
+            <span class="close" onclick="closeInformationModal()">&times;</span>
+            <p style="font-size: 30px;"><b>Симуляция работы алгоритма Гэйла — Шепли поиска стабильных мэтчингов</b></p>
+
+            <ul style="list-style-type: disc; text-align: left; font-size: 22px">
+                <li><b>pairs count</b> - установить количество пар</li>
+                <li><b>set new preferences</b> - задать новые предпочтения</li>
+                <li><img src="images/dices.PNG" alt="info" width="30" height="30" > - задать случайные предпочтения</li>
+                <li><b>show results</b> - вывести список стабильных мэтчингов</li>
+                <li><b>step by step</b> - запустить симуляцию по шагам</li>
+                <li>имена участников и их предпочтения можно устанавливать вручную!</li>
+            </ul>
+        </div>
     </div>
 
     <script src="script.js"></script>

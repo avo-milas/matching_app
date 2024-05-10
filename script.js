@@ -158,22 +158,57 @@ function isEngaged(woman, stablePairs) {
 }
 
 // отображение результатов ///////
+// function displayPairs(pairs) {
+//     const resultsContainer = document.getElementById('results');
+//     const menCnt = Object.keys(pairs).length;
+//     if (menCnt === 0) {
+//         resultsContainer.innerHTML = '<p>No stable pairs found.</p>';
+//     } else {
+//         resultsContainer.innerHTML = '<h2>Stable pairs:</h2>';
+//         for (let i = 1; i <= menCnt; i++) {
+//             // const man = Object.keys(pairs)[i - 1];
+//             const woman = pairs[i];
+//             const resultElement = document.createElement('p');
+//             resultElement.innerHTML = `<strong>Pair ${i}:</strong> ${menIndToName[i]} - ${womenIndToName[woman]}`;
+//             resultsContainer.appendChild(resultElement);
+//         }
+//     }
+// }
+
 function displayPairs(pairs) {
     const resultsContainer = document.getElementById('results');
     const menCnt = Object.keys(pairs).length;
     if (menCnt === 0) {
         resultsContainer.innerHTML = '<p>No stable pairs found.</p>';
     } else {
-        resultsContainer.innerHTML = '<h2>Stable pairs:</h2>';
+        // resultsContainer.innerHTML = '<h2>Stable pairs:</h2>';
+        const table = document.createElement('table');
+        table.classList.add('table');
+        const headerRow = document.createElement('tr');
+        const header1 = document.createElement('th');
+        const header2 = document.createElement('th');
+        header1.textContent = 'Man';
+        header2.textContent = 'Woman';
+        headerRow.appendChild(header1);
+        headerRow.appendChild(header2);
+        table.appendChild(headerRow);
         for (let i = 1; i <= menCnt; i++) {
-            // const man = Object.keys(pairs)[i - 1];
-            const woman = pairs[i];
-            const resultElement = document.createElement('p');
-            resultElement.innerHTML = `<strong>Pair ${i}:</strong> ${menIndToName[i]} - ${womenIndToName[woman]}`;
-            resultsContainer.appendChild(resultElement);
+            const man = menIndToName[i];
+            const woman = womenIndToName[pairs[i]];
+            const row = document.createElement('tr');
+            const cell1 = document.createElement('td');
+            const cell2 = document.createElement('td');
+            cell1.textContent = `\u{1F935} ${man}`;
+            cell2.textContent = `\u{1F470} ${woman}`;
+            row.appendChild(cell1);
+            row.appendChild(cell2);
+            table.appendChild(row);
         }
+        resultsContainer.appendChild(table);
     }
 }
+
+
 
 function clearResults() {
     const resultsContainer = document.getElementById('results');
@@ -216,7 +251,7 @@ function galeShapleyWithSteps(menPrefs, womenPrefs) {
                 if (!engagedMen.has(man)) {
 
                     const woman = menPrefs[man].shift();
-                    const actionDescription = `${menIndToName[man]} proposes to ${womenIndToName[woman]}`;
+                    const actionDescription = `${menIndToName[man]} &#128144; ${womenIndToName[woman]}`;
                     console.log(actionDescription)
                     cur_actions.push(actionDescription);
                     cur_lines.push([man, woman]);
@@ -242,7 +277,7 @@ function galeShapleyWithSteps(menPrefs, womenPrefs) {
                     engagedMen.add(man);
 
                     for (let rejectedMan of proposals[woman].slice(1)) {
-                        const actionDescription = `${menIndToName[rejectedMan]} is rejected by ${womenIndToName[woman]}`;
+                        const actionDescription = `${menIndToName[rejectedMan]} &#10060; ${womenIndToName[woman]}`;
                         console.log(actionDescription);
                         cur_actions.push(actionDescription);
                         cur_lines.push([rejectedMan, woman]);
@@ -341,7 +376,7 @@ function runAlgorithmWithSteps() {
             const step = steps[currentStepIndex];
             const line = lines[currentStepIndex];
             const resultElement = document.createElement('p');
-            resultElement.innerHTML = `<strong>Шаг ${currentStepIndex + 1}:</strong> ${step.join('; ')}`;
+            resultElement.innerHTML = `<strong>Step ${currentStepIndex + 1}:</strong> ${step.join('; ')}`;
             document.getElementById('results').appendChild(resultElement);
 
             line.forEach(pair => {
@@ -357,7 +392,8 @@ function runAlgorithmWithSteps() {
     }
 
     nextStepButton = document.createElement('button');
-    nextStepButton.textContent = 'Следующий шаг';
+    nextStepButton.id = 'nextStepButton';
+    nextStepButton.textContent = 'Next step';
     nextStepButton.onclick = displayNextStep;
     document.getElementById('buttonsContainer').appendChild(nextStepButton);    
 }
@@ -382,12 +418,14 @@ function showConnectionLine(manIndex, womanIndex, stepIndex) {
         line.setAttribute("y1", startY);
         line.setAttribute("x2", connectionLines.clientWidth);
         line.setAttribute("y2", endY);
-        line.setAttribute("stroke-width", "6");
+        line.setAttribute("stroke-width", "4");
 
         if (stepIndex % 2 === 0) {
-            line.setAttribute("stroke", "#94a8b1");
+            // line.setAttribute("stroke", "#94a8b1");
+            line.setAttribute("stroke", "#3e4d6d");
         } else {
             line.setAttribute("stroke", "#dfeaee");
+            // line.setAttribute("stroke", "#7791ca");
         }
 
         connectionLines.appendChild(line);
@@ -482,13 +520,15 @@ document.getElementById('randomizeButton').addEventListener('click', function() 
     clearResults();
     clearConnectionLines();
 
+    mapNames();
+
     const pairsCount = parseInt(document.getElementById('pairsCount').value);
     if (pairsCount > 0) {
 
         for (let i = 1; i <= pairsCount; i++) {
             const preferences = [];
             for (let j = 1; j <= pairsCount; j++) {
-                preferences.push(`w${j}`);
+                preferences.push(`${womenIndToName[j]}`);
             }
             shuffleArray(preferences); // Перемешивание массива предпочтений
             const input = document.getElementById(`man${i}`);
@@ -498,7 +538,7 @@ document.getElementById('randomizeButton').addEventListener('click', function() 
         for (let i = 1; i <= pairsCount; i++) {
             const preferences = [];
             for (let j = 1; j <= pairsCount; j++) {
-                preferences.push(`m${j}`);
+                preferences.push(`${menIndToName[j]}`);
             }
             shuffleArray(preferences); // Перемешивание массива предпочтений
             const input = document.getElementById(`woman${i}`);
@@ -514,4 +554,13 @@ function shuffleArray(array) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     }
+}
+
+
+function showInformation() {
+    document.getElementById("informationModal").style.display = "block";
+}
+
+function closeInformationModal() {
+    document.getElementById("informationModal").style.display = "none";
 }
