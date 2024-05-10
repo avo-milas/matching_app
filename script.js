@@ -251,7 +251,7 @@ function galeShapleyWithSteps(menPrefs, womenPrefs) {
                 if (!engagedMen.has(man)) {
 
                     const woman = menPrefs[man].shift();
-                    const actionDescription = `${menIndToName[man]} &#128144; ${womenIndToName[woman]}`;
+                    const actionDescription = `${menIndToName[man]} &#128141; ${womenIndToName[woman]}`;
                     console.log(actionDescription)
                     cur_actions.push(actionDescription);
                     cur_lines.push([man, woman]);
@@ -422,7 +422,7 @@ function showConnectionLine(manIndex, womanIndex, stepIndex) {
 
         if (stepIndex % 2 === 0) {
             // line.setAttribute("stroke", "#94a8b1");
-            line.setAttribute("stroke", "#3e4d6d");
+            line.setAttribute("stroke", "#1c2332");
         } else {
             line.setAttribute("stroke", "#dfeaee");
             // line.setAttribute("stroke", "#7791ca");
@@ -508,6 +508,11 @@ function resetAlgorithm() {
 
 
 document.getElementById('newDataButton').addEventListener('click', resetAlgorithm);
+const connectionLines = document.getElementById('connectionLines');
+document.getElementById('newDataButton').addEventListener('click', function() {
+    connectionLines.style.display = 'block';
+});
+
 document.getElementById('resultButton').addEventListener('click', function() {
     runAlgorithm();
 });
@@ -564,3 +569,4 @@ function showInformation() {
 function closeInformationModal() {
     document.getElementById("informationModal").style.display = "none";
 }
+

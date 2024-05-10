@@ -7,13 +7,16 @@ button, input[type="text"], select, body {
 }
 
 body {
-    background-color: #9fbedf;
+    /* background-color: #9fbedf; */
+    /* background-image: linear-gradient(to left, #9fbedf, #7791ca); */
+    /* background-image: linear-gradient(to left, #ff6347, #7791ca); */
+    background-image: linear-gradient(to right,  rgb(235, 246, 248), #1c2332);
 }
 
 input[type="text"] {
     font-family: Trebuchet MS, monospace;
     /* font-family: Courier, monospace; */
-    background-color: #dfeaee;
+    /* background-color: #dfeaee; */
 }
 
 #newPreferencesInput {
@@ -21,6 +24,7 @@ input[type="text"] {
     width: 42%;
     top: 0;
     left: 0;
+    /* background-image: linear-gradient(to right,  #9fbedf, #7791ca); */
     /* background-color: #9fbedf; */
 }
 
@@ -37,7 +41,7 @@ p {
 
 #upperButtons {
     /* background-color: rgb(148,168,177); */
-    background-color: #9fbedf;
+    /* background-color: #9fbedf; */
     padding-bottom: 20px;
     padding-top: 20px;
     padding-left: 10px;
@@ -114,7 +118,7 @@ p {
     top: 0;
     right: 0;
     width: 58%;
-    background-color: #7791ca;
+    /* background-color: #7791ca; */
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     align-items: flex-start;
@@ -133,7 +137,19 @@ p {
 
 #connectionLines {
     height: 100%;
+    display: none;
     background-color: #dfeaee;
+    animation-name: fadeIn; /* название анимации */
+    animation-duration: 0.5s; /* длительность анимации */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0; /* Начальная непрозрачность */
+    }
+    to {
+        opacity: 1; /* Конечная непрозрачность */
+    }
 }
 
 label {
@@ -189,7 +205,7 @@ img {
   
   .modal-content {
     background-color: #fefefe;
-    margin: 15% auto;
+    margin: 10% auto;
     padding: 20px;
     border: 1px solid #888;
     width: 80%; 
@@ -221,4 +237,13 @@ img {
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+
+#infoButton, button, img {
+    transition: transform 0.3s ease; /* Плавное изменение при наведении */
+}
+
+#infoButton:hover, button:hover, img:hover {
+    transform: scale(1.05); /* Увеличиваем размер при наведении */
 }
