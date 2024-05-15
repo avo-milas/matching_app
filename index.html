@@ -14,7 +14,7 @@
             
             <div style="display: flex; align-items: center;"> 
                 <div id="infoButton" onclick="showInfo()" style="margin-right: 10px; margin-left: 10px;">
-                    <img src="images/info.png" alt="info" width="30" height="30">
+                    <img src="images/infocircle.png" alt="info" width="30" height="30">
                 </div>
 
                 <p style="font-weight: bold; font-size: 40px; margin-left: 20px; color: #1c2332; margin-right: 30px;">Gale-Shapley Algorithm</p>
@@ -23,7 +23,7 @@
             <div style="display: flex; align-items: center;">
                 <label for="pairsCount">Pairs count:</label>
                 <input type="number" id="pairsCount" placeholder="1" value="3" min="1" style="width: 50px;">
-                <button id="newDataButton">Set new preference</button>
+                <button id="newDataButton">Set new preferences</button>
 
                 <button id="randomizeButton">
                     <img src="images/dice.png" alt="dice" width="35 " height="35">
@@ -55,18 +55,31 @@
             <p style="font-size: 30px;"><b>Симуляция работы алгоритма Гэйла — Шепли поиска стабильных мэтчингов</b></p>
 
             <ul style="list-style-type: disc; text-align: left; font-size: 22px">
-                <li><b>pairs count</b> - установить количество пар</li>
-                <li><b>set new preferences</b> - задать новые предпочтения</li>
-                <li><img src="images/dice.png" alt="info" width="30" height="30" > - задать случайные предпочтения</li>
-                <li><b>show results</b> - вывести список стабильных мэтчингов</li>
-                <li><b>step by step</b> - запустить симуляцию по шагам</li>
-                <li>&#128141 - мужчина делает предложение девушке</li>
-                <li>&#10060 - девушка отказывается от предложения</li>
-                <li>имена участников и их предпочтения можно устанавливать вручную!</li>
+                <li><b>Шаг 1:</b> установить количество пар в <b>`pairs count`</b></li>
+                <li><b>Шаг 2:</b> задать новые предпочтения, нажав <b>`set new preferences`</b></li>
+                <ul>
+                    <li>ввести <b>имена</b> мужчин и женщин <i>без пробелов</i> или использовать значения по умолчанию</li>
+                    <li>
+                        ввести <b>предпочтения</b> <i>через пробел</i> или задать случайные, используя
+                        <img src="images/dice.png" alt="info" width="25" height="25" style="vertical-align: middle; margin-right: 5px;">
+                    </li>
+                </ul>
+                <li><b>Шаг 3: </b>ознакомиться с результатами</li>
+                <ul style="list-style-type: none;">
+                    <li><b>`show results`</b> - вывести список стабильных мэтчингов</li>
+                    <li><b>`step by step`</b> - запустить симуляцию по шагам:</li>
+                    <li style="list-style-type: none;">&#128141; - мужчина делает предложение девушке</li>
+                    <li style="list-style-type: none;">&#10060; - девушка отказывается от предложения</li>
+                </ul>
             </ul>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
+
+<div class="author-info"><a style="color: rgb(192, 195, 197, 0.6)"; href="https://t.me/avo_milas">© Алина Салимова</a></div>
+
 </html>
+
+

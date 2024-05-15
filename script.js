@@ -14,6 +14,18 @@ function showInfo() {
     document.getElementById("infoModal").style.display = "block";
 }
 
+
+document.addEventListener('DOMContentLoaded', function() {
+    var infoButton = document.getElementById('infoButton');
+    setInterval(function() {
+        var modal = document.getElementById('infoModal');
+        if (!modal.classList.contains('active')) {
+            infoButton.classList.add('pulse');
+        }
+    }, 2000);
+});
+
+
 function closeInfoModal() {
     document.getElementById("infoModal").style.display = "none";
 }

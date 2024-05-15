@@ -10,6 +10,7 @@ input[type="text"] {
     border-radius: 6px;
     border-width: 1px;
     font-size: 18px;
+    width: 85%;
 }
 
 body {
@@ -67,7 +68,7 @@ img {
 }
 
 .modal {
-    display: none;
+    /* display: none; */
     position: fixed; 
     z-index: 1; 
     left: 0;
@@ -99,6 +100,7 @@ img {
     }
 }
 
+
 .close {
     color: #aaa;
     float: right;
@@ -120,6 +122,7 @@ img {
     margin-top: 7px;
     margin-right: 4px;
 }
+
 
 #pairsCountLabel, #pairsCount, #newDataButton {
     margin: 10px;
@@ -218,4 +221,13 @@ img {
     to {
         opacity: 1;
     }
+}
+
+
+.author-info {
+    position: fixed;
+    bottom: 15px;
+    right: 30px;
+    color: rgba(225, 236, 236, 0.5);
+    font-size: 14px;
 }
