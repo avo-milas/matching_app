@@ -93,7 +93,6 @@ function parsePreferences(input, prefix) {
     let nameToInd = (prefix === "man") ? womenNameToInd : menNameToInd;
 
     if (!areSetsEqual(cur_prefs_names, setNames)) {
-        alert('Предпочтения одной стороны должны быть согласованы с именами другой!');
         return false;
     }
 
@@ -108,7 +107,11 @@ function getPreferences(prefix) {
         const id = `${prefix}${i}`;
         let f = parsePreferences(document.getElementById(id).value, prefix);
         if (f) { preferences[i] = f }
-        else { return false }
+        else {
+            let indToName = (prefix === "man") ? menIndToName : womenIndToName;
+            alert(`Предпочтения одной стороны должны быть согласованы с именами другой! Ошибка в предпочтениях ${indToName[i]}`);
+            return false;
+        }
     }
     return preferences;
 }
