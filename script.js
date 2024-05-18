@@ -7,13 +7,20 @@ let menIndToName = {};
 let menNameToInd = {};
 let womenIndToName = {};
 let womenNameToInd = {};
+menPhotos = [...Array(10).keys()];
+womenPhotos = [...Array(10).keys()];
 let nextStepButton = null;
+let linesToDelete = new Set();
+
+
+function getRandomInRange(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 
 function showInfo() {
     document.getElementById("infoModal").style.display = "block";
 }
-
 
 document.addEventListener('DOMContentLoaded', function() {
     var infoButton = document.getElementById('infoButton');
@@ -206,7 +213,61 @@ function resetAlgorithm() {
     menPreferencesContainer.innerHTML = '';
     womenPreferencesContainer.innerHTML = '';
 
-    for (let i = 1; i <= pairsCnt; i++) {
+    menPhotos.sort(() => Math.random() - 0.5);
+    womenPhotos.sort(() => Math.random() - 0.5);
+    console.log(menPhotos);
+    console.log(womenPhotos);
+
+    // заполнение фото
+    for (let i = 1; i <= (pairsCnt < 10 ? pairsCnt : 10); i++) {
+        const labelMan = document.createElement('label');
+        labelMan.htmlFor = `man${i}`;
+
+        const inputManName = document.createElement('input');
+        inputManName.type = 'text';
+        inputManName.id = `manName${i}`;
+        inputManName.placeholder = `name`;
+        inputManName.value = `m${i}`;
+
+        const inputManPreferences = document.createElement('input');
+        inputManPreferences.type = 'text';
+        inputManPreferences.id = `man${i}`;
+        inputManPreferences.placeholder = `preferences`;
+
+        // const menCircle = createCircleImageElement('images/boy.png', `M${i}`);
+        console.log(i);
+        const menCircle = createCircleImageElement(`images/m${menPhotos[i - 1] + 1}.png`, `M${i}`);
+
+        menPreferencesContainer.appendChild(labelMan);
+        menPreferencesContainer.appendChild(inputManName);
+        menPreferencesContainer.appendChild(inputManPreferences);
+        menPreferencesContainer.appendChild(menCircle);
+
+        const labelWoman = document.createElement('label');
+        labelWoman.htmlFor = `woman${i}`;
+        
+        const inputWomanName = document.createElement('input');
+        inputWomanName.type = 'text';
+        inputWomanName.id = `womanName${i}`;
+        inputWomanName.placeholder = `name`;
+        inputWomanName.value = `w${i}`;
+
+        const inputWomanPreferences = document.createElement('input');
+        inputWomanPreferences.type = 'text';
+        inputWomanPreferences.id = `woman${i}`;
+        inputWomanPreferences.placeholder = `preferences`;
+
+        // const womenCircle = createCircleImageElement('images/girl.png', `W${i}`);
+        const womenCircle = createCircleImageElement(`images/w${womenPhotos[i - 1] + 1}.png`, `W${i}`);
+
+        womenPreferencesContainer.appendChild(labelWoman);
+        womenPreferencesContainer.appendChild(inputWomanName);
+        womenPreferencesContainer.appendChild(inputWomanPreferences);
+        womenPreferencesContainer.appendChild(womenCircle);
+    }
+
+    // заполнение обзеличенной иконкой
+    for (let i = 11; i <= pairsCnt; i++) {
         const labelMan = document.createElement('label');
         labelMan.htmlFor = `man${i}`;
 
@@ -249,6 +310,7 @@ function resetAlgorithm() {
         womenPreferencesContainer.appendChild(inputWomanPreferences);
         womenPreferencesContainer.appendChild(womenCircle);
     }
+
 }
 
 function displayPairs(pairs) {
@@ -293,42 +355,81 @@ function clearResults() {
     }
 }
 
-function showConnectionLine(manIndex, womanIndex, stepIndex) {
+
+function getLineYcoord(manIndex, womanIndex) {
     const menPreferences = document.getElementById("menPreferences");
     const womenPreferences = document.getElementById("womenPreferences");
     const connectionLines = document.getElementById("connectionLines");
+    const connectionLinesWidth = connectionLines.clientWidth;
 
     const manElement = menPreferences.children[4 * manIndex - 1];
     const womanElement = womenPreferences.children[4 * womanIndex - 1];
     const manRect = manElement.getBoundingClientRect();
     const womanRect = womanElement.getBoundingClientRect();
 
-    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-    
     const startY = manRect.y - menPreferences.getBoundingClientRect().y + manRect.height / 2;
     const endY = womanRect.y - womenPreferences.getBoundingClientRect().y + womanRect.height / 2;
+    return {startY, endY, connectionLinesWidth};
+}
 
+function showConnectionLine(manIndex, womanIndex, stepIndex) {
+
+    const {startY, endY, connectionLinesWidth} = getLineYcoord(manIndex, womanIndex);
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+
+    const line_id = `${manIndex}_${womanIndex}`;
+    line.setAttribute("id", line_id);
     line.setAttribute("x1", 0);
     line.setAttribute("y1", startY);
-    line.setAttribute("x2", connectionLines.clientWidth);
+    line.setAttribute("x2", connectionLinesWidth);
     line.setAttribute("y2", endY);
     line.setAttribute("stroke-width", "4");
 
+    connectionLines.appendChild(line);
+    let totalLength = line.getTotalLength();
+
+
     if (stepIndex % 2 === 0) {
-        line.setAttribute("stroke", "#1c2332");
+        line.setAttribute("stroke-dashoffset", totalLength);
     } else {
-        line.setAttribute("stroke", "#dfeaee");
+        line.setAttribute("stroke-dashoffset", "0");
     }
 
+    if (stepIndex % 2 === 0) {
+        line.setAttribute("stroke", "#1c2332");
+        line.setAttribute("stroke-dasharray", totalLength + " " + totalLength);
+    } else {
+        linesToDelete.add(line_id);
+        deleteConnectionLine(line_id);
+        line.setAttribute("stroke", "#f92f60");
+        line.setAttribute("stroke-dasharray", "16 8");
+    }
+
+    line.style.transition = "stroke-dashoffset 1s ease";
     connectionLines.appendChild(line);
-    line.setAttribute("stroke-dasharray", "0 " + line.getTotalLength());
-    line.style.transition = "stroke-dasharray 1s ease";
-    line.setAttribute("stroke-dasharray", line.getTotalLength() + " 0");
+
+    if (stepIndex % 2 === 0) {
+        requestAnimationFrame(() => {
+            line.setAttribute("stroke-dashoffset", "0");
+        });
+    } else {
+        requestAnimationFrame(() => {
+            line.setAttribute("stroke-dashoffset", totalLength);
+        });
+    }
+    
 }
 
 function clearConnectionLines() {
     const connectionLines = document.getElementById("connectionLines");
     connectionLines.innerHTML = '';
+}
+
+function deleteConnectionLine(line_id) {
+    const lineToRemove = document.getElementById(line_id);
+    if (lineToRemove) {
+        lineToRemove.remove();
+    }
 }
 
 
@@ -477,6 +578,11 @@ function runAlgorithmWithSteps() {
             const resultElement = document.createElement('p');
             resultElement.innerHTML = `<strong>Step ${currentStepIndex + 1}:</strong> ${step.join('; ')}`;
             document.getElementById('results').appendChild(resultElement);
+            
+            if (currentStepIndex % 2 === 0) {
+                linesToDelete.forEach(deleteConnectionLine);
+                linesToDelete.clear();
+            }
 
             line.forEach(pair => {
                 const [manIndex, womanIndex] = pair;
