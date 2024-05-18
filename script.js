@@ -195,8 +195,10 @@ function createCircleImageElement(src, alt) {
     const img = document.createElement('img');
     img.src = src;
     img.alt = alt;
+    img.id = alt;
     img.width = 100;
     img.height = 100;
+    img.classList.add('glowing-icon');
     return img;
 }
 
@@ -353,6 +355,10 @@ function clearResults() {
         nextStepButton.remove();
         nextStepButton = null;
     }
+    const icons = document.querySelectorAll('.glowing-icon');
+        icons.forEach(icon => {
+        icon.style.boxShadow = '0 0 15px 2px rgba(237, 238, 240, 0.8)';
+    });
 }
 
 
@@ -391,8 +397,16 @@ function showConnectionLine(manIndex, womanIndex, stepIndex) {
 
     if (stepIndex % 2 === 0) {
         line.setAttribute("stroke-dashoffset", totalLength);
+        const icon = document.getElementById(`M${manIndex}`);
+        if (icon) {
+            icon.style.boxShadow = '0 0 15px 2px rgba(237, 238, 240, 0.8)';
+        }
     } else {
         line.setAttribute("stroke-dashoffset", "0");
+        const icon = document.getElementById(`M${manIndex}`);
+        if (icon) {
+            icon.style.boxShadow = '0 0 15px 2px rgba(249, 47, 96, 0.8)';
+        }
     }
 
     if (stepIndex % 2 === 0) {
@@ -447,6 +461,7 @@ function galeShapleyWithSteps(menPrefs, womenPrefs) {
     let proposals = {};
     let algorithmSteps = [];
     let algorithmLines = [];
+    let engagedMenAtSteps = [];
 
     // Шаг симуляции: 1 - мужчины делают предложения, 2 - женщины выбирают
     let currentSimulationStep = 1;
@@ -499,16 +514,22 @@ function galeShapleyWithSteps(menPrefs, womenPrefs) {
                     proposals[woman] = [man];
                 }
             }
+
+            // engagedMen.forEach(man => {
+            //     const icon = document.getElementById(`M${man}`);
+            //     icon.style.boxShadow = '0 0 15px 2px rgba(151, 240, 151, 0.8)';
+            // });
         }
 
         algorithmSteps.push(cur_actions);
         algorithmLines.push(cur_lines);
+        engagedMenAtSteps.push(engagedMen);
         cur_actions = [];
         cur_lines = [];
         currentSimulationStep = currentSimulationStep === 1 ? 2 : 1; // Переключение сторон
     }
-
-    return { pairs: stablePairs, steps: algorithmSteps, lines: algorithmLines};
+    console.log(`maaaaaaaaaaaaaaaaan${engagedMenAtSteps}`);
+    return { pairs: stablePairs, steps: algorithmSteps, lines: algorithmLines, engagedMenAtSteps: engagedMenAtSteps};
 }
 
 function runAlgorithm() {
@@ -534,7 +555,7 @@ function runAlgorithm() {
         }
     }
 
-    const { pairs, steps, lines } = cachedResults;
+    const { pairs, steps, lines, engagedMenAtSteps } = cachedResults;
 
     displayPairs(pairs);
 
@@ -565,7 +586,7 @@ function runAlgorithmWithSteps() {
         }
     }
 
-    const { pairs, steps, lines } = cachedResults;
+    const { pairs, steps, lines, engagedMenAtSteps } = cachedResults;
 
     let currentStepIndex = 0;
 
@@ -582,14 +603,24 @@ function runAlgorithmWithSteps() {
             if (currentStepIndex % 2 === 0) {
                 linesToDelete.forEach(deleteConnectionLine);
                 linesToDelete.clear();
+            } else {
+                engagedMenAtSteps[currentStepIndex].forEach(man => {
+                    const icon = document.getElementById(`M${man}`);
+                    icon.style.boxShadow = '0 0 15px 2px rgba(151, 240, 151, 0.8)';
+                });
             }
 
             line.forEach(pair => {
                 const [manIndex, womanIndex] = pair;
                 showConnectionLine(manIndex, womanIndex, currentStepIndex);
             });
+
             currentStepIndex++;
         } else {
+            const icons = document.querySelectorAll('.glowing-icon');
+                icons.forEach(icon => {
+                icon.style.boxShadow = '0 0 15px 2px rgba(151, 240, 151, 0.8)';
+            });
             alert('Больше шагов нет!');
         }
     }

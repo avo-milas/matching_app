@@ -45,6 +45,14 @@ img {
     transform: scale(1.05);
 }
 
+.glowing-icon {
+    display: block;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    box-shadow: 0 0 15px 2px rgba(237, 240, 238, 0.8);
+}
+
 
 #newPreferencesInput {
     position: fixed;
@@ -68,7 +76,7 @@ img {
 }
 
 .modal {
-    /* display: none; */
+    display: none;
     position: fixed; 
     z-index: 1; 
     left: 0;
