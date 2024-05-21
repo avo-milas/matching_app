@@ -1,4 +1,4 @@
-button, input[type="text"], select, body {
+button, input[type="text"], select, body, #pairsCount {
     border-radius: 6px;
     border-width: 1px;
     font-family: Courier, monospace;
@@ -14,7 +14,7 @@ input[type="text"] {
 }
 
 body {
-    background-image: linear-gradient(to right,  rgb(216, 246, 251), #1c2332);
+    background-image: linear-gradient(to right,  #d8f6fb, #1c2332);
 }
 
 p {
@@ -24,11 +24,9 @@ p {
     margin-top: 0px;
     margin-bottom: 10px;
 }
-
 input {
     margin-bottom: 5px;
 }
-
 img {
     margin-bottom: 15px;
 }
@@ -36,21 +34,11 @@ img {
 #infoButton, button {
     cursor: pointer;
 }
-
 #infoButton, button, img {
     transition: transform 0.3s ease;
 }
-
 #infoButton:hover, button:hover, img:hover {
     transform: scale(1.05);
-}
-
-.glowing-icon {
-    display: block;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    box-shadow: 0 0 15px 2px rgba(237, 240, 238, 0.8);
 }
 
 
@@ -89,7 +77,7 @@ img {
   
 .modal-content {
     background-color: #fefefe;
-    margin: 10% auto;
+    margin: 5% auto;
     padding: 20px;
     border: 1px solid #888;
     width: 80%; 
@@ -108,7 +96,6 @@ img {
     }
 }
 
-
 .close {
     color: #aaa;
     float: right;
@@ -122,7 +109,8 @@ img {
     cursor: pointer;
 }
 
-#randomizeButton {
+
+#randomizeButton, #bookButton {
     margin-left: 10px;
     border: none;
     outline: none;
@@ -131,27 +119,40 @@ img {
     margin-right: 4px;
 }
 
+#newDataButton {
+    box-shadow: 0 5px 10px 0 #556179;
+}
 
-#pairsCountLabel, #pairsCount, #newDataButton {
+
+#pairsCountLabel, #pairsCount, #newDataButton, #options {
     margin: 10px;
     top: 10px;
     margin-right: 0px;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: rgb(0, 0, 0);
+    background-image: linear-gradient(to right, #dddedf 0%, #ffffff 51%, #d8d8d8 100%);
 }
 
 #resultButton, #runWithStepsButton, #nextStepButton {
     margin-top: 5px;
     transition: background-color 0.1s;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: rgb(0, 0, 0);
+    background-image: linear-gradient(to right, #dddedf 0%, #ffffff 51%, #d8d8d8 100%);
 }
-  
-#resultButton:active,
-#runWithStepsButton:active,
-#nextStepButton:active,
-#newDataButton:active {
+
+#newDataButton:hover, #resultButton:hover, #runWithStepsButton:hover, #nextStepButton:hover {
+    background-position: right center;
+}
+
+#resultButton:active, #runWithStepsButton:active, #nextStepButton:active, #newDataButton:active {
     background-color: #c9d7e7;
     transform: translateY(1px);
 }
 
-#randomizeButton:active, #infoButton:active {
+#randomizeButton:active, #infoButton:active, #bookButton:active {
     transform: translateY(1px);
 }
 
@@ -204,6 +205,14 @@ img {
     height: 100vh;
     max-height: 100%;
     overflow-y: auto;
+}
+
+.glowing-icon {
+    display: block;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    box-shadow: 0 0 15px 2px rgba(237, 240, 238, 0.8);
 }
 
 #menPreferences, #womenPreferences, #connectionLines {

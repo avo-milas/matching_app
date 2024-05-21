@@ -23,15 +23,24 @@
             <div style="display: flex; align-items: center;">
                 <label for="pairsCount">Pairs count:</label>
                 <input type="number" id="pairsCount" placeholder="1" value="3" min="1" style="width: 50px;">
-                <button id="newDataButton">Set new preferences</button>
+                <button id="newDataButton">New start</button>
 
                 <button id="randomizeButton">
                     <img src="images/dice.png" alt="dice" width="35" height="35">
                 </button>
 
-                <button id="randomizeButton">
-                    <img src="images/book.png" alt="dice" width="40" height="40">
+                <button id="bookButton">
+                    <img src="images/book.png" alt="book" width="40" height="40">
                 </button>
+                <div id="optionsContainer" style="display: none;">
+                    <select id="options">
+                      <option value="" disabled selected>Choose</option>
+                      <option value="best">Best for men</option>
+                      <option value="same">Same preferences</option>
+                      <option value="chain">Chain</option>
+                      <!-- <option value="worst">Худшее для мужчин</option> -->
+                    </select>
+                </div>
 
 
             </div>
@@ -61,21 +70,29 @@
             <p style="font-size: 30px;"><b>Симуляция работы алгоритма Гэйла — Шепли поиска стабильных мэтчингов</b></p>
 
             <ul style="list-style-type: disc; text-align: left; font-size: 22px">
-                <li><b>Шаг 1:</b> установить количество пар в <b>`pairs count`</b></li>
-                <li><b>Шаг 2:</b> задать новые предпочтения, нажав <b>`set new preferences`</b></li>
+                <li><b>Шаг 1:</b> установить количество пар в <b>`Pairs count`</b></li>
+                <li><b>Шаг 2:</b> задать новые предпочтения, нажав <b>`New start`</b></li>
                 <ul>
                     <li>ввести <b>имена</b> мужчин и женщин <i>без пробелов</i> или использовать значения по умолчанию</li>
-                    <li>
-                        ввести <b>предпочтения</b> <i>(через пробел от наиболее предпочтительных к наименее)</i> или задать случайные, используя
-                        <img src="images/dice.png" alt="info" width="25" height="25" style="vertical-align: middle; margin-right: 5px;">
+                    <li>ввести <b>предпочтения:</b>
+                        <ul>
+                            <li>через пробел от наиболее предпочтительных к наименее</li>
+                            <li>задать случайные, используя
+                                <img src="images/dice.png" alt="info" width="25" height="25" style="vertical-align: middle; margin-right: 5px;">
+                            </li>
+                            <li>ознакомиться с учебными примерами, используя
+                                <img src="images/book.png" alt="info" width="25" height="25" style="vertical-align: middle; margin-right: 5px;">
+                            </li>
+                        </ul>
                     </li>
                 </ul>
                 <li><b>Шаг 3: </b>ознакомиться с результатами</li>
                 <ul style="list-style-type: none;">
                     <li><b>`show results`</b> - вывести список стабильных мэтчингов</li>
                     <li><b>`step by step`</b> - запустить симуляцию по шагам:</li>
-                    <li style="list-style-type: none;">&#128141; - мужчина делает предложение девушке</li>
-                    <li style="list-style-type: none;">&#10060; - девушка отказывается от предложения</li>
+                    <li style="list-style-type: none;">&#128141; - мужчина делает предложение женщине</li>
+                    <!-- <li style="list-style-type: none;">&#9989; - девушка временно принимает предложение</li> -->
+                    <li style="list-style-type: none;">&#10060; - женщина отказывается от предложения</li>
                 </ul>
             </ul>
         </div>

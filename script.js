@@ -9,32 +9,14 @@ let womenIndToName = {};
 let womenNameToInd = {};
 menPhotos = [...Array(10).keys()];
 womenPhotos = [...Array(10).keys()];
+menNamesArray = ['Adam', 'Brian', 'Calvin', 'Dave', 'Ethan', 'Harry', 'John', 'Kyle', 'Neil', 'Tyler'];
+womenNamesArray = ['Ida', 'Viola', 'Grace', 'Jane', 'Laura', 'Sara', 'Chloe', 'Emily', 'Tracy', 'Nora'];
 let nextStepButton = null;
 let linesToDelete = new Set();
 
 
 function getRandomInRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-
-function showInfo() {
-    document.getElementById("infoModal").style.display = "block";
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    var infoButton = document.getElementById('infoButton');
-    setInterval(function() {
-        var modal = document.getElementById('infoModal');
-        if (!modal.classList.contains('active')) {
-            infoButton.classList.add('pulse');
-        }
-    }, 2000);
-});
-
-
-function closeInfoModal() {
-    document.getElementById("infoModal").style.display = "none";
 }
 
 function areSetsEqual(set1, set2) {
@@ -49,6 +31,20 @@ function isEqual(obj1, obj2) {
     return JSON.stringify(obj1) === JSON.stringify(obj2);
 }
 
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+function showInfo() {
+    document.getElementById("infoModal").style.display = "block";
+}
+
+function closeInfoModal() {
+    document.getElementById("infoModal").style.display = "none";
+}
 
 // Операции с предпочтениями и именами //
 
@@ -149,12 +145,6 @@ function checkPreferencesChanged() {
     return false;
 }
 
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-}
 
 function randomizePreferences() {
     clearResults();
@@ -189,6 +179,26 @@ function randomizePreferences() {
 }
 
 
+function bookPrefernces(cnt, menPrefs, womenPrefs) {
+    var pairsCount = document.getElementById('pairsCount');
+    pairsCount.value = cnt;
+
+    resetAlgorithm();
+    mapNames();
+
+    console.log(pairsCount);
+
+    for (let i = 1; i <= pairsCount.value; i++) {
+        console.log(i);
+        const mInput = document.getElementById(`man${i}`);
+        console.log(menPrefs[i].map((idx) => womenIndToName[idx]).join(' ') );
+        mInput.value = menPrefs[i].map((idx) => womenIndToName[idx]).join(' ');
+        const wInput = document.getElementById(`woman${i}`);
+        wInput.value = womenPrefs[i].map((idx) => menIndToName[idx]).join(' ');
+    }
+}
+
+
 // Отображение результатов //
 
 function createCircleImageElement(src, alt) {
@@ -217,102 +227,62 @@ function resetAlgorithm() {
 
     menPhotos.sort(() => Math.random() - 0.5);
     womenPhotos.sort(() => Math.random() - 0.5);
-    console.log(menPhotos);
-    console.log(womenPhotos);
 
-    // заполнение фото
-    for (let i = 1; i <= (pairsCnt < 10 ? pairsCnt : 10); i++) {
-        const labelMan = document.createElement('label');
-        labelMan.htmlFor = `man${i}`;
+    function createCircles(type, startCnt, endCnt) {
+        for (let i = startCnt; i <= endCnt; i++) {
 
-        const inputManName = document.createElement('input');
-        inputManName.type = 'text';
-        inputManName.id = `manName${i}`;
-        inputManName.placeholder = `name`;
-        inputManName.value = `m${i}`;
+            const labelMan = document.createElement('label');
+            labelMan.htmlFor = `man${i}`;
+            const labelWoman = document.createElement('label');
+            labelWoman.htmlFor = `woman${i}`;
+    
+            const inputManName = document.createElement('input');
+            inputManName.type = 'text';
+            inputManName.id = `manName${i}`;
+            inputManName.placeholder = `name`;
+            
+            const inputWomanName = document.createElement('input');
+            inputWomanName.type = 'text';
+            inputWomanName.id = `womanName${i}`;
+            inputWomanName.placeholder = `name`;
 
-        const inputManPreferences = document.createElement('input');
-        inputManPreferences.type = 'text';
-        inputManPreferences.id = `man${i}`;
-        inputManPreferences.placeholder = `preferences`;
+            const inputManPreferences = document.createElement('input');
+            inputManPreferences.type = 'text';
+            inputManPreferences.id = `man${i}`;
+            inputManPreferences.placeholder = `preferences`;
+            const inputWomanPreferences = document.createElement('input');
+            inputWomanPreferences.type = 'text';
+            inputWomanPreferences.id = `woman${i}`;
+            inputWomanPreferences.placeholder = `preferences`;
 
-        // const menCircle = createCircleImageElement('images/boy.png', `M${i}`);
-        console.log(i);
-        const menCircle = createCircleImageElement(`images/m${menPhotos[i - 1] + 1}.png`, `M${i}`);
-
-        menPreferencesContainer.appendChild(labelMan);
-        menPreferencesContainer.appendChild(inputManName);
-        menPreferencesContainer.appendChild(inputManPreferences);
-        menPreferencesContainer.appendChild(menCircle);
-
-        const labelWoman = document.createElement('label');
-        labelWoman.htmlFor = `woman${i}`;
-        
-        const inputWomanName = document.createElement('input');
-        inputWomanName.type = 'text';
-        inputWomanName.id = `womanName${i}`;
-        inputWomanName.placeholder = `name`;
-        inputWomanName.value = `w${i}`;
-
-        const inputWomanPreferences = document.createElement('input');
-        inputWomanPreferences.type = 'text';
-        inputWomanPreferences.id = `woman${i}`;
-        inputWomanPreferences.placeholder = `preferences`;
-
-        // const womenCircle = createCircleImageElement('images/girl.png', `W${i}`);
-        const womenCircle = createCircleImageElement(`images/w${womenPhotos[i - 1] + 1}.png`, `W${i}`);
-
-        womenPreferencesContainer.appendChild(labelWoman);
-        womenPreferencesContainer.appendChild(inputWomanName);
-        womenPreferencesContainer.appendChild(inputWomanPreferences);
-        womenPreferencesContainer.appendChild(womenCircle);
+            let menCircle;
+            let womenCircle;
+            if (type === "photo") {
+                inputManName.value = menNamesArray[i - 1];
+                inputWomanName.value = womenNamesArray[i - 1];
+                menCircle = createCircleImageElement(`images/m${menPhotos[i - 1] + 1}.png`, `M${i}`);
+                womenCircle = createCircleImageElement(`images/w${womenPhotos[i - 1] + 1}.png`, `W${i}`);
+            } else {
+                inputManName.value = `m${i}`;
+                inputWomanName.value = `w${i}`;
+                menCircle = createCircleImageElement('images/boy.png', `M${i}`);
+                womenCircle = createCircleImageElement('images/girl.png', `W${i}`);
+            }
+    
+            menPreferencesContainer.appendChild(labelMan);
+            menPreferencesContainer.appendChild(inputManName);
+            menPreferencesContainer.appendChild(inputManPreferences);
+            menPreferencesContainer.appendChild(menCircle);
+            womenPreferencesContainer.appendChild(labelWoman);
+            womenPreferencesContainer.appendChild(inputWomanName);
+            womenPreferencesContainer.appendChild(inputWomanPreferences);
+            womenPreferencesContainer.appendChild(womenCircle);
+        }
+    
     }
 
-    // заполнение обзеличенной иконкой
-    for (let i = 11; i <= pairsCnt; i++) {
-        const labelMan = document.createElement('label');
-        labelMan.htmlFor = `man${i}`;
-
-        const inputManName = document.createElement('input');
-        inputManName.type = 'text';
-        inputManName.id = `manName${i}`;
-        inputManName.placeholder = `name`;
-        inputManName.value = `m${i}`;
-
-        const inputManPreferences = document.createElement('input');
-        inputManPreferences.type = 'text';
-        inputManPreferences.id = `man${i}`;
-        inputManPreferences.placeholder = `preferences`;
-
-        const menCircle = createCircleImageElement('images/boy.png', `M${i}`);
-
-        menPreferencesContainer.appendChild(labelMan);
-        menPreferencesContainer.appendChild(inputManName);
-        menPreferencesContainer.appendChild(inputManPreferences);
-        menPreferencesContainer.appendChild(menCircle);
-
-        const labelWoman = document.createElement('label');
-        labelWoman.htmlFor = `woman${i}`;
-        
-        const inputWomanName = document.createElement('input');
-        inputWomanName.type = 'text';
-        inputWomanName.id = `womanName${i}`;
-        inputWomanName.placeholder = `name`;
-        inputWomanName.value = `w${i}`;
-
-        const inputWomanPreferences = document.createElement('input');
-        inputWomanPreferences.type = 'text';
-        inputWomanPreferences.id = `woman${i}`;
-        inputWomanPreferences.placeholder = `preferences`;
-
-        const womenCircle = createCircleImageElement('images/girl.png', `W${i}`);
-
-        womenPreferencesContainer.appendChild(labelWoman);
-        womenPreferencesContainer.appendChild(inputWomanName);
-        womenPreferencesContainer.appendChild(inputWomanPreferences);
-        womenPreferencesContainer.appendChild(womenCircle);
-    }
-
+    createCircles("photo", 1, pairsCnt < 10 ? pairsCnt : 10);
+    createCircles("icon", 11, pairsCnt);
 }
 
 function displayPairs(pairs) {
@@ -393,7 +363,6 @@ function showConnectionLine(manIndex, womanIndex, stepIndex) {
 
     connectionLines.appendChild(line);
     let totalLength = line.getTotalLength();
-
 
     if (stepIndex % 2 === 0) {
         line.setAttribute("stroke-dashoffset", totalLength);
@@ -503,22 +472,22 @@ function galeShapleyWithSteps(menPrefs, womenPrefs) {
                     stablePairs[man] = woman;
                     engagedMen.add(man);
 
+                    if (proposals[woman].length > 1) {
+                        const actionDescription = " <b>></b> " + `${proposals[woman].slice(1).map((m) => 
+                            `${menIndToName[m]}(&#10060)`).join(' <b>></b> ')}`;
+                        cur_actions.push(`${womenIndToName[woman]}: ${menIndToName[man]}` + actionDescription);  
+                        //&#9989
+                    }
+
                     for (let rejectedMan of proposals[woman].slice(1)) {
-                        const actionDescription = `${menIndToName[rejectedMan]} &#10060; ${womenIndToName[woman]}`;
-                        console.log(actionDescription);
-                        cur_actions.push(actionDescription);
                         cur_lines.push([rejectedMan, woman]);
                         stablePairs[rejectedMan] = null;
                         engagedMen.delete(rejectedMan);
                     }
+
                     proposals[woman] = [man];
                 }
             }
-
-            // engagedMen.forEach(man => {
-            //     const icon = document.getElementById(`M${man}`);
-            //     icon.style.boxShadow = '0 0 15px 2px rgba(151, 240, 151, 0.8)';
-            // });
         }
 
         algorithmSteps.push(cur_actions);
@@ -528,7 +497,6 @@ function galeShapleyWithSteps(menPrefs, womenPrefs) {
         cur_lines = [];
         currentSimulationStep = currentSimulationStep === 1 ? 2 : 1; // Переключение сторон
     }
-    console.log(`maaaaaaaaaaaaaaaaan${engagedMenAtSteps}`);
     return { pairs: stablePairs, steps: algorithmSteps, lines: algorithmLines, engagedMenAtSteps: engagedMenAtSteps};
 }
 
@@ -597,18 +565,20 @@ function runAlgorithmWithSteps() {
             const step = steps[currentStepIndex];
             const line = lines[currentStepIndex];
             const resultElement = document.createElement('p');
-            resultElement.innerHTML = `<strong>Step ${currentStepIndex + 1}:</strong> ${step.join('; ')}`;
-            document.getElementById('results').appendChild(resultElement);
             
             if (currentStepIndex % 2 === 0) {
+                resultElement.innerHTML = `<u><b>Step ${currentStepIndex + 1}:</b></u> ${step.join('; ')}`;
                 linesToDelete.forEach(deleteConnectionLine);
                 linesToDelete.clear();
             } else {
+                resultElement.innerHTML = `<u><b>Step ${currentStepIndex + 1}:</b></u> ${step.map((s) => `<br>&emsp;${s}`).join('')}`;
                 engagedMenAtSteps[currentStepIndex].forEach(man => {
                     const icon = document.getElementById(`M${man}`);
                     icon.style.boxShadow = '0 0 15px 2px rgba(151, 240, 151, 0.8)';
                 });
             }
+            document.getElementById('results').appendChild(resultElement);
+
 
             line.forEach(pair => {
                 const [manIndex, womanIndex] = pair;
@@ -633,11 +603,64 @@ function runAlgorithmWithSteps() {
 }
 
 
+document.addEventListener('DOMContentLoaded', function() {
+    var infoButton = document.getElementById('infoButton');
+    setInterval(function() {
+        var modal = document.getElementById('infoModal');
+        if (!modal.classList.contains('active')) {
+            infoButton.classList.add('pulse');
+        }
+    }, 2000);
+});
+
 const connectionLines = document.getElementById('connectionLines');
 document.getElementById('newDataButton').addEventListener('click', function() {
     connectionLines.style.display = 'block';
     resetAlgorithm();
 });
 document.getElementById('randomizeButton').addEventListener('click', randomizePreferences);
+document.getElementById('bookButton').addEventListener('click', function() {
+    var button = document.getElementById('bookButton');
+    var optionsContainer = document.getElementById('optionsContainer');
+
+    var optionsContainer = document.getElementById('optionsContainer');
+    if (optionsContainer.style.display === 'none') {
+      optionsContainer.style.display = 'block';
+    } else {
+      optionsContainer.style.display = 'none';
+    }
+});
+
+document.getElementById('options').addEventListener('change', function() {
+    var selectedOption = this.value;
+    console.log('Выбрана опция: ' + selectedOption);
+    optionsContainer.style.display = 'none';
+
+    switch (selectedOption) {
+        case 'best':
+            const bestMen = {1: [2, 3, 1, 4], 2: [4, 1, 3, 2], 3: [1, 3, 4, 2], 4:[3, 4, 1, 2]};
+            const bestWomen = {1: [1, 2, 3, 4], 2: [2, 4, 3, 1], 3: [3, 2, 1, 4], 4:[2, 3, 4, 1]};
+            bookPrefernces(4, bestMen, bestWomen);
+            break;
+        case 'same':
+            const sameMen = {1: [1, 2, 3, 4], 2: [1, 2, 3, 4], 3: [1, 2, 3, 4], 4:[1, 2, 3, 4]};
+            const sameWomen = {1: [1, 2, 3, 4], 2: [1, 2, 3, 4], 3: [1, 2, 3, 4], 4:[1, 2, 3, 4]};
+            bookPrefernces(4, sameMen, sameWomen);
+            break;
+        case 'chain':
+            const chainMen = {1: [1, 4, 2, 3], 2: [1, 2, 3, 4], 3: [2, 3, 1, 4], 4:[3, 1, 2, 4]};
+            const chainWomen = {1: [4, 1, 2, 3], 2: [2, 3, 1, 4], 3: [3, 4, 1, 2], 4:[1, 2, 3, 4]};
+            bookPrefernces(4, chainMen, chainWomen);
+            break;
+        // case 'worst':
+        //     const worstMen = {1: [1, 3, 2], 2: [1, 2, 3], 3: [2, 1, 3]};
+        //     const worstWomen = {1: [3, 1, 2], 2: [2, 1, 3], 3: [1, 2, 3]};
+        //     bookPrefernces(3, worstMen, worstWomen);
+        //     break;
+        default:
+            console.log('Опция не выбрана');
+    }
+});
+
 document.getElementById('resultButton').addEventListener('click', runAlgorithm);
 document.getElementById('runWithStepsButton').addEventListener('click', runAlgorithmWithSteps);
