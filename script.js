@@ -390,6 +390,9 @@ function deleteConnectionLine(line_id) {
     }
 }
 
+
+// Сброс и инициализация
+
 function resetAlgorithm() {
     /**
     * Очищает и поле и для новых параметров
